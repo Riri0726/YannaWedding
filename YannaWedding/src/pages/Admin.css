@@ -1,0 +1,115 @@
+.admin {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.admin header h1 {
+  margin: 0 0 16px 0;
+}
+
+.admin-content h2 {
+  margin: 16px 0;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.admin-controls input[type="text"],
+.admin-controls input[type="number"],
+.admin-controls input[type="email"],
+.admin-controls input[type="search"],
+.guest-section input[type="text"],
+.guest-section input[type="email"] {
+  padding: 8px 10px;
+  border: 1px solid #d5d7da;
+  border-radius: 8px;
+}
+
+.admin button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #0f62fe;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.admin button:disabled {
+  background: #9cb7ff;
+  cursor: not-allowed;
+}
+
+.group-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.group-item {
+  border: 1px solid #e6e8eb;
+  border-radius: 12px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.group-item h3 {
+  margin-top: 0;
+}
+
+.guest-section {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.guest-section form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+}
+
+.guest-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow: auto;
+  border-top: 1px dashed #e6e8eb;
+  padding-top: 8px;
+}
+
+.guest-section li {
+  padding: 6px 0;
+  border-bottom: 1px dashed #f0f2f4;
+}
+
+.guest-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.guest-card-mini {
+  border: 1px solid #e6e8eb;
+  border-radius: 10px;
+  padding: 10px;
+  background: #f9fafb;
+}
+
+.guest-card-mini .guest-name {
+  font-weight: 600;
+}
+
+.guest-card-mini .guest-email {
+  font-size: 12px;
+  color: #667085;
+}
+
+

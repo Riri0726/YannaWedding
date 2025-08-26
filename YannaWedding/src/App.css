@@ -1,0 +1,25 @@
+/* Shared guest mini card styles (mirrors Admin) */
+.guest-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.guest-card-mini {
+  border: 1px solid #e6e8eb;
+  border-radius: 10px;
+  padding: 10px;
+  background: #f9fafb;
+}
+
+.guest-card-mini .guest-name {
+  font-weight: 600;
+}
+
+.guest-card-mini .guest-email {
+  font-size: 12px;
+  color: #667085;
+}
+
+
