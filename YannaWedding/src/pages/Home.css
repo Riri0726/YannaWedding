@@ -1063,6 +1063,20 @@ h1, h2, h3, h4 {
   line-height: 1.4;
 }
 
+.no-guests-message {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 16px;
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid #f59e0b;
+}
+
+.no-guests-message p {
+  margin: 0;
+  font-weight: 500;
+}
+
 .submit-btn:disabled {
   background-color: #cccccc;
   cursor: not-allowed;

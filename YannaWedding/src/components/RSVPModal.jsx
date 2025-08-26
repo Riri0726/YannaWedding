@@ -24,6 +24,13 @@ const RSVPModal = () => {
   const remainingSlots = selectedGroup?.group_count_max && Array.isArray(groupGuests)
     ? Math.max(0, selectedGroup.group_count_max - groupGuests.length)
     : undefined;
+    
+  console.log('Debug remainingSlots:', {
+    group_count_max: selectedGroup?.group_count_max,
+    groupGuests: groupGuests,
+    groupGuestsLength: Array.isArray(groupGuests) ? groupGuests.length : 'not array',
+    remainingSlots: remainingSlots
+  });
   const maxSlots = typeof remainingSlots === 'number' ? remainingSlots : Infinity;
   const canAddMoreGuests = guestNames.length < maxSlots;
 
@@ -45,6 +52,7 @@ const RSVPModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted!', { selectedGroup, selectedGuest, isComing, email });
     if (!selectedGroup) return;
 
     try {
@@ -134,11 +142,14 @@ const RSVPModal = () => {
           let warningMessage = '';
           
           if (selectedGroup.is_predetermined) {
-            // For predetermined groups: show warning if ALL guests have responded
-            const allResponded = groupGuests.length > 0 && groupGuests.every(guest => guest.rsvp_submitted);
-            if (allResponded) {
-              shouldShowWarning = true;
-              warningMessage = '⚠️ All guests in this group have already responded. You cannot submit additional RSVPs.';
+            // For predetermined groups: only show warning if ALL guests have responded
+            // If no guests exist yet, don't show warning
+            if (groupGuests.length > 0) {
+              const allResponded = groupGuests.every(guest => guest.rsvp_submitted);
+              if (allResponded) {
+                shouldShowWarning = true;
+                warningMessage = '⚠️ All guests in this group have already responded. You cannot submit additional RSVPs.';
+              }
             }
           } else {
             // For unknown groups: show warning if they have responded (regardless of yes/no)
@@ -160,40 +171,51 @@ const RSVPModal = () => {
           return null;
         })()}
         
-        {selectedGroup?.is_predetermined && !selectedGuest && (
-          <div className="form-group">
-            <label>Select your name</label>
-            <div className="guest-card-grid">
-              {groupGuests.map(g => {
-                const isLocked = g.is_coming !== null; // Lock if Going or Not Going
-                const canSelect = !isLocked; // Only allow selection if Pending
-                
-                return (
-                  <div 
-                    key={g.id} 
-                    className={`guest-card-mini ${isLocked ? 'locked' : ''}`} 
-                    onClick={() => canSelect && setSelectedGuest(g)} 
-                    style={{ 
-                      cursor: canSelect ? 'pointer' : 'not-allowed',
-                      opacity: isLocked ? 0.6 : 1
-                    }}
-                  >
-                    <div className="guest-name">{g.name}</div>
-                    {isLocked ? (
-                      <div className="guest-locked">
-                        🔒 RSVP Submitted
-                      </div>
-                    ) : (
-                      <div className="guest-respond">
-                        Respond
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                 {selectedGroup?.is_predetermined && !selectedGuest && (
+           <div className="form-group">
+             <label>Select your name</label>
+             <div className="guest-card-grid">
+               {groupGuests.length === 0 ? (
+                 <div className="no-guests-message">
+                   <p>No guests found for this group. Please contact the administrator.</p>
+                 </div>
+               ) : (
+                 groupGuests.map(g => {
+                   const isLocked = g.rsvp_submitted; // Lock if already responded
+                   const canSelect = !isLocked; // Only allow selection if not responded
+                   
+                   return (
+                     <div 
+                       key={g.id} 
+                       className={`guest-card-mini ${isLocked ? 'locked' : ''}`} 
+                       onClick={() => canSelect && setSelectedGuest(g)} 
+                       style={{ 
+                         cursor: canSelect ? 'pointer' : 'not-allowed',
+                         opacity: isLocked ? 0.6 : 1
+                       }}
+                     >
+                       <div className="guest-name">{g.name}</div>
+                       {isLocked ? (
+                         <div className="guest-locked">
+                           🔒 RSVP Submitted
+                         </div>
+                       ) : (
+                         <div className="guest-respond">
+                           Respond
+                         </div>
+                       )}
+                     </div>
+                   );
+                 })
+               )}
+             </div>
+             {groupGuests.length === 0 && (
+               <div className="info-message">
+                 <p>⚠️ This group has no guests assigned. Please contact the administrator to add guests.</p>
+               </div>
+             )}
+           </div>
+         )}
         
         {selectedGroup?.is_predetermined && selectedGuest && (
           <p className="guest-limit-info">Guest: {selectedGuest?.name}</p>
@@ -297,19 +319,20 @@ const RSVPModal = () => {
 
           {error && <div className="error-message">{error}</div>}
           
-          {(!selectedGroup?.is_predetermined || (selectedGroup?.is_predetermined && selectedGuest)) && (
-            <button 
-              type="submit" 
-              className="submit-btn" 
-              disabled={
-                loading || 
-                (typeof remainingSlots === 'number' && guestNames.length > remainingSlots) ||
-                (!selectedGroup?.is_predetermined && isComing === true && guestNames.filter(n => n.trim()).length === 0)
-              }
-            >
-              {loading ? 'Submitting...' : 'Submit RSVP'}
-            </button>
-          )}
+          
+           
+           <button 
+             type="submit" 
+             className="submit-btn" 
+             disabled={
+               loading || 
+               (selectedGroup?.is_predetermined && !selectedGuest) ||
+               (!selectedGroup?.is_predetermined && typeof remainingSlots === 'number' && guestNames.length > remainingSlots) ||
+               (!selectedGroup?.is_predetermined && isComing === true && guestNames.filter(n => n.trim()).length === 0)
+             }
+           >
+             {loading ? 'Submitting...' : 'Submit RSVP'}
+           </button>
         </form>
       </div>
     </div>

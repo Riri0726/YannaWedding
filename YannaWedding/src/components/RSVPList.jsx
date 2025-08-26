@@ -64,10 +64,13 @@ const RSVPList = () => {
     const groupGuests = guestsByGroup[group.id] || [];
     
     if (group.is_predetermined) {
-      // For predetermined groups: check if ALL guests have responded
-      const allResponded = groupGuests.length > 0 && groupGuests.every(guest => guest.rsvp_submitted);
-      if (allResponded) {
-        return; // Don't open modal if all guests have responded
+      // For predetermined groups: only block if ALL guests have responded
+      // If no guests exist yet, allow opening the modal
+      if (groupGuests.length > 0) {
+        const allResponded = groupGuests.every(guest => guest.rsvp_submitted);
+        if (allResponded) {
+          return; // Don't open modal if all guests have responded
+        }
       }
     } else {
       // For unknown groups: block if they have responded (regardless of yes/no)
@@ -198,8 +201,13 @@ const RSVPList = () => {
                 // Determine if card should be locked
                 let isLocked = false;
                 if (group.is_predetermined) {
-                  // For predetermined groups: lock only if ALL guests have responded
-                  isLocked = groupGuests.length > 0 && groupGuests.every(guest => guest.rsvp_submitted);
+                  // For predetermined groups: only lock if ALL guests have responded
+                  // If no guests exist yet, don't lock
+                  if (groupGuests.length === 0) {
+                    isLocked = false;
+                  } else {
+                    isLocked = groupGuests.every(guest => guest.rsvp_submitted);
+                  }
                 } else {
                   // For unknown groups: lock if they have responded (regardless of yes/no)
                   // Admin can unlock by changing status to Pending
