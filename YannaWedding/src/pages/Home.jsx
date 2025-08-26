@@ -48,6 +48,8 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
+
+
   return (
     <div className="home">
       {/* Navigation */}
@@ -76,9 +78,9 @@ const Home = () => {
           <h2>BY THE GRACE OF GOD AND WITH THE BLESSINGS OF OUR PARENTS,</h2>
           <div className="couple-names">
             <h1>WE</h1>
-            <h1>Ronald</h1>
+            <h1>Third</h1>
             <h2>AND</h2>
-            <h1>Samantha</h1>
+            <h1>Aleanna</h1>
           </div>
         <p className="invitation-text">
           REQUEST THE HONOR OF YOUR PRESENCE TO CELEBRATE LOVE AS WE BEGIN THE FIRST DAY OF OUR LIVES TOGETHER
@@ -135,6 +137,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+
 
       {/* Gallery Section */}
       <section className="gallery" id="gallery">

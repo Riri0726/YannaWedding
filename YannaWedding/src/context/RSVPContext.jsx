@@ -47,18 +47,27 @@ export const RSVPProvider = ({ children }) => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [groupGuests, setGroupGuests] = useState([]);
+  const [guestsByGroup, setGuestsByGroup] = useState({});
   const [selectedGuest, setSelectedGuest] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load groups
+  // Load groups and guests
   useEffect(() => {
     const loadFamilies = async () => {
       try {
         setLoading(true);
         const fetched = await adminService.listGroups();
         setGroups(fetched);
+        
+        // Load guests for all groups
+        const guestsData = {};
+        for (const group of fetched) {
+          const guests = await adminService.listGuestsByGroup(group.id);
+          guestsData[group.id] = guests;
+        }
+        setGuestsByGroup(guestsData);
       } catch (err) {
         console.error('Error loading groups:', err);
         setError('Failed to load groups');
@@ -82,17 +91,40 @@ export const RSVPProvider = ({ children }) => {
     }
   };
 
+  const refresh = async () => {
+    try {
+      setLoading(true);
+      const fetched = await adminService.listGroups();
+      setGroups(fetched);
+      
+      // Load guests for all groups
+      const guestsData = {};
+      for (const group of fetched) {
+        const guests = await adminService.listGuestsByGroup(group.id);
+        guestsData[group.id] = guests;
+      }
+      setGuestsByGroup(guestsData);
+    } catch (err) {
+      console.error('Error refreshing data:', err);
+      setError('Failed to refresh data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const value = {
     groups,
     selectedGroup,
     setSelectedGroup: openGroup,
     groupGuests,
+    guestsByGroup,
     selectedGuest,
     setSelectedGuest,
     isModalOpen,
     setIsModalOpen,
     loading,
-    error
+    error,
+    refresh
   };
 
   return (

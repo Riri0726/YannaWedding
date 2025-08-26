@@ -1,4 +1,4 @@
-import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, addDoc, query, where, writeBatch } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, addDoc, query, where, writeBatch, deleteDoc } from 'firebase/firestore';
 import { app } from '../firebase.js';
 
 const db = getFirestore(app);
@@ -78,6 +78,7 @@ export const adminService = {
       group_name: group.group_name,
       group_count_max: Number(group.group_count_max) || 0,
       is_predetermined: Boolean(group.is_predetermined) || false,
+      guest_type: group.guest_type || 'bride',
       createdAt: new Date().toISOString()
     });
     return { id: created.id };
@@ -87,6 +88,37 @@ export const adminService = {
     const groupsCol = collection(db, 'groups');
     const snap = await getDocs(groupsCol);
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+
+  async updateGroup(groupId, updates) {
+    const ref = doc(db, 'groups', groupId);
+    await updateDoc(ref, {
+      ...updates,
+      group_count_max: Number(updates.group_count_max) || 0,
+      is_predetermined: Boolean(updates.is_predetermined) || false,
+      guest_type: updates.guest_type || 'bride',
+      updatedAt: new Date().toISOString()
+    });
+    return true;
+  },
+
+  async deleteGroup(groupId) {
+    // First, delete all guests in this group
+    const guestsCol = collection(db, 'guests');
+    const q = query(guestsCol, where('group_id', '==', groupId));
+    const guestSnap = await getDocs(q);
+
+    const batch = writeBatch(db);
+    guestSnap.docs.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    // Then delete the group
+    const groupRef = doc(db, 'groups', groupId);
+    batch.delete(groupRef);
+
+    await batch.commit();
+    return true;
   },
 
   async createGuest(guest) {
@@ -110,34 +142,82 @@ export const adminService = {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   },
 
+  async listAllGuests() {
+    const guestsCol = collection(db, 'guests');
+    const snap = await getDocs(guestsCol);
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  },
+
   // RSVP actions
   async updateGuestRSVP(guestId, { email, is_coming }) {
     const ref = doc(db, 'guests', guestId);
     await updateDoc(ref, {
       email: email || '',
       is_coming: typeof is_coming === 'boolean' ? is_coming : null,
+      rsvp_submitted: true,
+      rsvp_date: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     });
     return true;
   },
 
-  async addUnknownGroupGuests(groupId, email, names) {
+  async addUnknownGroupGuests(groupId, email, names, isComing) {
     const batch = writeBatch(db);
     const guestsCol = collection(db, 'guests');
-    names
-      .filter(n => n && n.trim())
-      .forEach(n => {
-        const newRef = doc(guestsCol);
-        batch.set(newRef, {
-          group_id: groupId,
-          name: n.trim(),
-          is_coming: true,
-          in_group: true,
-          email: email || '',
-          createdAt: new Date().toISOString()
+    
+    if (isComing && names && names.length > 0) {
+      // If they're coming, create guest records for each name
+      names
+        .filter(n => n && n.trim())
+        .forEach(n => {
+          const newRef = doc(guestsCol);
+          batch.set(newRef, {
+            group_id: groupId,
+            name: n.trim(),
+            is_coming: true,
+            in_group: true,
+            email: email || '',
+            rsvp_submitted: true,
+            rsvp_date: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+          });
         });
+    } else if (!isComing) {
+      // If they're not coming, create a placeholder guest record
+      const newRef = doc(guestsCol);
+      batch.set(newRef, {
+        group_id: groupId,
+        name: 'Family Cannot Attend',
+        is_coming: false,
+        in_group: true,
+        email: 'N/A',
+        rsvp_submitted: true,
+        rsvp_date: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       });
+    }
+    
     await batch.commit();
     return true;
+  },
+
+  async updateGuest(guestId, updates) {
+    const ref = doc(db, 'guests', guestId);
+    await updateDoc(ref, { ...updates, updatedAt: new Date().toISOString() });
+    return true;
+  },
+
+  async deleteGuest(guestId) {
+    console.log('🔥 deleteGuest called with guestId:', guestId);
+    const ref = doc(db, 'guests', guestId);
+    console.log('🔥 Document reference:', ref);
+    try {
+      await deleteDoc(ref);
+      console.log('🔥 Guest deleted successfully from Firebase');
+      return true;
+    } catch (error) {
+      console.error('🔥 Error deleting guest from Firebase:', error);
+      throw error;
+    }
   }
 };
