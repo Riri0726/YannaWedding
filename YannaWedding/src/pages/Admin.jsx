@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase.js';
 import { adminService } from '../services/rsvpService';
 import Dashboard from './Dashboard';
 import GuestsAdmin from './GuestsAdmin';
@@ -240,6 +242,14 @@ const Admin = () => {
     setNewGroupName('');
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <div className="admin">
       {/* Toast Notifications */}
@@ -269,6 +279,14 @@ const Admin = () => {
         >
           Guests
         </button>
+        <div className="admin-sidebar-footer">
+          <button
+            className="admin-logout-btn"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Main Content */}

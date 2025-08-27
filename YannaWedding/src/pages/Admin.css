@@ -57,6 +57,29 @@
   color: white;
 }
 
+.admin-sidebar-footer {
+  margin-top: auto;
+  padding: 24px;
+  border-top: 1px solid #334155;
+}
+
+.admin-logout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-logout-btn:hover {
+  background: #b91c1c;
+}
+
 /* Main Content - Full remaining width, positioned to account for fixed sidebar */
 .admin-main {
   flex: 1;

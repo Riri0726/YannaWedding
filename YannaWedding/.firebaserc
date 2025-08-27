@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "testing": "yannawedding-11b85",
+    "default": "yannawedding-11b85"
+  },
+  "targets": {},
+  "etags": {}
+}
