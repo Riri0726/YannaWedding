@@ -64,20 +64,20 @@ const RSVPList = () => {
     const groupGuests = guestsByGroup[group.id] || [];
     
     if (group.is_predetermined) {
-      // For predetermined groups: only block if ALL guests have responded
+      // For predetermined groups: only block if ALL guests have final status (Going/Not Going)
       // If no guests exist yet, allow opening the modal
       if (groupGuests.length > 0) {
-        const allResponded = groupGuests.every(guest => guest.rsvp_submitted);
-        if (allResponded) {
-          return; // Don't open modal if all guests have responded
+        const allHaveFinalStatus = groupGuests.every(guest => guest.is_coming !== null);
+        if (allHaveFinalStatus) {
+          return; // Don't open modal if all guests have final status
         }
       }
     } else {
-      // For unknown groups: block if they have responded (regardless of yes/no)
-      // Admin can unlock by changing status to Pending
-      const hasResponded = groupGuests.some(guest => guest.rsvp_submitted);
-      if (hasResponded) {
-        return; // Don't open modal if they have already responded
+      // For unknown groups: block if they have final status (Going/Not Going)
+      // Admin can unlock by changing status to Pending (is_coming = null)
+      const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
+      if (hasFinalStatus) {
+        return; // Don't open modal if they have final status
       }
     }
     
@@ -201,18 +201,18 @@ const RSVPList = () => {
                 // Determine if card should be locked
                 let isLocked = false;
                 if (group.is_predetermined) {
-                  // For predetermined groups: only lock if ALL guests have responded
+                  // For predetermined groups: only lock if ALL guests have final status (Going/Not Going)
                   // If no guests exist yet, don't lock
                   if (groupGuests.length === 0) {
                     isLocked = false;
                   } else {
-                    isLocked = groupGuests.every(guest => guest.rsvp_submitted);
+                    isLocked = groupGuests.every(guest => guest.is_coming !== null);
                   }
                 } else {
-                  // For unknown groups: lock if they have responded (regardless of yes/no)
-                  // Admin can unlock by changing status to Pending
-                  const hasResponded = groupGuests.some(guest => guest.rsvp_submitted);
-                  isLocked = hasResponded;
+                  // For unknown groups: lock if they have final status (Going/Not Going)
+                  // Admin can unlock by changing status to Pending (is_coming = null)
+                  const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
+                  isLocked = hasFinalStatus;
                 }
                 
                 return (
@@ -223,7 +223,7 @@ const RSVPList = () => {
                     <h3>{group.group_name}</h3>
                     {isLocked ? (
                       <div className="lock-indicator">
-                        {group.is_predetermined ? '🔒 All Guests Responded' : '🔒 RSVP Submitted'}
+                        {group.is_predetermined ? '🔒 All Guests Responded' : '🔒 Response Submitted'}
                       </div>
                     ) : (
                       <button 

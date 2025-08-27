@@ -142,20 +142,20 @@ const RSVPModal = () => {
           let warningMessage = '';
           
           if (selectedGroup.is_predetermined) {
-            // For predetermined groups: only show warning if ALL guests have responded
+            // For predetermined groups: only show warning if ALL guests have final status (Going/Not Going)
             // If no guests exist yet, don't show warning
             if (groupGuests.length > 0) {
-              const allResponded = groupGuests.every(guest => guest.rsvp_submitted);
-              if (allResponded) {
+              const allHaveFinalStatus = groupGuests.every(guest => guest.is_coming !== null);
+              if (allHaveFinalStatus) {
                 shouldShowWarning = true;
                 warningMessage = '⚠️ All guests in this group have already responded. You cannot submit additional RSVPs.';
               }
             }
           } else {
-            // For unknown groups: show warning if they have responded (regardless of yes/no)
-            // Admin can unlock by changing status to Pending
-            const hasResponded = groupGuests.some(guest => guest.rsvp_submitted);
-            if (hasResponded) {
+            // For unknown groups: show warning if they have final status (Going/Not Going)
+            // Admin can unlock by changing status to Pending (is_coming = null)
+            const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
+            if (hasFinalStatus) {
               shouldShowWarning = true;
               warningMessage = '⚠️ This group has already responded. You cannot submit additional RSVPs.';
             }
@@ -181,8 +181,8 @@ const RSVPModal = () => {
                  </div>
                ) : (
                  groupGuests.map(g => {
-                   const isLocked = g.rsvp_submitted; // Lock if already responded
-                   const canSelect = !isLocked; // Only allow selection if not responded
+                   const isLocked = g.is_coming !== null; // Lock if Going or Not Going
+                   const canSelect = !isLocked; // Only allow selection if Pending
                    
                    return (
                      <div 

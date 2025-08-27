@@ -340,68 +340,70 @@ const GuestsAdmin = ({
                 </div>
               </div>
               
-              <table className="guest-table">
-                <thead>
-                  <tr>
-                    <th>Guest</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(guestsByGroup[group.id] || []).length > 0 ? (
-                    (guestsByGroup[group.id] || []).map((g) => (
-                      <tr key={g.id}>
-                        <td>{g.name}</td>
-                        <td>{g.name === 'Family Cannot Attend' ? 'N/A' : (g.email || '-')}</td>
-                                              <td>
-                        <div 
-                          className="clickable-status"
-                          onClick={() => openQuickStatusModal(g)}
-                          title="Click to change status"
-                        >
-                          {g.rsvp_submitted ? (
-                            g.is_coming === true ? (
-                              <span className="status-going">Going</span>
-                            ) : g.is_coming === false ? (
-                              g.name === 'Family Cannot Attend' ? (
-                                <span className="status-not-going">Family Cannot Attend</span>
+              <div className="table-container">
+                <table className="guest-table">
+                  <thead>
+                    <tr>
+                      <th>Guest</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(guestsByGroup[group.id] || []).length > 0 ? (
+                      (guestsByGroup[group.id] || []).map((g) => (
+                        <tr key={g.id}>
+                          <td>{g.name}</td>
+                          <td>{g.name === 'Family Cannot Attend' ? 'N/A' : (g.email || '-')}</td>
+                                                <td>
+                          <div 
+                            className="clickable-status"
+                            onClick={() => openQuickStatusModal(g)}
+                            title="Click to change status"
+                          >
+                            {g.rsvp_submitted ? (
+                              g.is_coming === true ? (
+                                <span className="status-going">Going</span>
+                              ) : g.is_coming === false ? (
+                                g.name === 'Family Cannot Attend' ? (
+                                  <span className="status-not-going">Family Cannot Attend</span>
+                                ) : (
+                                  <span className="status-not-going">Not Going</span>
+                                )
                               ) : (
-                                <span className="status-not-going">Not Going</span>
+                                <span className="status-pending">Pending</span>
                               )
                             ) : (
                               <span className="status-pending">Pending</span>
-                            )
-                          ) : (
-                            <span className="status-pending">Pending</span>
-                          )}
-                        </div>
-                      </td>
-                        <td className="action-buttons">
-                          <button 
-                            onClick={() => openEditGuestModal(g)}
-                            className="edit-btn"
-                          >
-                            Edit
-                          </button>
-                          <button 
-                            onClick={() => handleDeleteGuest(g.id, group.id)}
-                            className="delete-btn"
-                            disabled={deletingGuestId === g.id}
-                          >
-                            {deletingGuestId === g.id ? 'Deleting...' : 'Delete'}
-                          </button>
+                            )}
+                          </div>
                         </td>
+                          <td className="action-buttons">
+                            <button 
+                              onClick={() => openEditGuestModal(g)}
+                              className="edit-btn"
+                            >
+                              Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteGuest(g.id, group.id)}
+                              className="delete-btn"
+                              disabled={deletingGuestId === g.id}
+                            >
+                              {deletingGuestId === g.id ? 'Deleting...' : 'Delete'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center text-gray-500">No guests yet</td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4" className="text-center text-gray-500">No guests yet</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           ))}
         </div>

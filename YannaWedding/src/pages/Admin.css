@@ -1,7 +1,7 @@
 /* Admin Panel - Full Screen Layout */
 .admin {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   display: flex;
   background: #f8fafc;
   margin: 0;
@@ -63,9 +63,10 @@
   margin-left: 280px;
   padding: 32px;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #f8fafc;
   min-height: 100vh;
-  width: calc(100vw - 280px);
+  width: calc(100% - 280px);
   box-sizing: border-box;
 }
 
@@ -563,6 +564,24 @@
   width: 100%;
   border-collapse: collapse;
   background: white;
+  box-sizing: border-box;
+}
+
+/* Table Container for horizontal scrolling */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+/* Ensure table has minimum width for mobile */
+.guest-table {
+  min-width: 800px; /* Minimum width to prevent squishing */
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
 }
 
 .guest-table th {
@@ -649,7 +668,7 @@
   
   .admin-main {
     margin-left: 240px;
-    width: calc(100vw - 240px);
+    width: calc(100% - 240px);
   }
   
   .charts-grid {
@@ -691,6 +710,92 @@
   .group-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  /* Table mobile styles */
+  .table-container {
+    margin: 0 -20px; /* Negative margin to allow full width scrolling */
+    padding: 0 20px;
+  }
+  
+  .guest-table {
+    min-width: 700px; /* Slightly smaller minimum width for mobile */
+  }
+  
+  .guest-table th,
+  .guest-table td {
+    padding: 12px 8px;
+    font-size: 13px;
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+  
+  .guest-table th:first-child,
+  .guest-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 1;
+  }
+  
+  .guest-table th:first-child {
+    background: #f8fafc;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-sidebar {
+    padding: 12px;
+  }
+
+  .admin-nav-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+    min-width: 100px;
+  }
+
+  .admin-main {
+    padding: 12px;
+  }
+
+  .stats-grid {
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .dashboard-stats h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  /* Table mobile styles for very small screens */
+  .table-container {
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+  
+  .guest-table {
+    min-width: 600px; /* Even smaller minimum width for very small screens */
+  }
+  
+  .guest-table th,
+  .guest-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 50px;
   }
 }
 
