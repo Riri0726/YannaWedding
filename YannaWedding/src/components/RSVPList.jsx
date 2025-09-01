@@ -16,7 +16,7 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message, confirmText
   if (!isOpen) return null;
   
   return (
-    <div className="modal-overlay">
+    <div className="confirm-modal-overlay">
       <div className="modal-content confirm-modal">
         <h3>{title}</h3>
         <p>{message}</p>
@@ -30,7 +30,7 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message, confirmText
 };
 
 const RSVPList = () => {
-  const { groups, organizedData, setSelectedGroup, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
+  const { groups, organizedData, setSelectedGroup, setSelectedGuest, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
   const [selectedSide, setSelectedSide] = useState('select');
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState(null);
@@ -44,6 +44,7 @@ const RSVPList = () => {
 
   const openConfirmModal = (action, title, message) => {
     setConfirmAction(action);
+    setIsModalOpen(false); // Ensure RSVP modal is closed
     setShowConfirmModal(true);
   };
 
@@ -84,6 +85,9 @@ const RSVPList = () => {
     // Expose toast function to modal
     window.showToast = showToast;
     
+    // Ensure confirm modal is closed before opening RSVP modal
+    setShowConfirmModal(false);
+    
     setSelectedGroup(group);
     setIsModalOpen(true);
   };
@@ -97,11 +101,15 @@ const RSVPList = () => {
     // Expose toast function to modal
     window.showToast = showToast;
     
-    // Create a temporary group structure for the individual guest
+    // Ensure confirm modal is closed before opening RSVP modal
+    setShowConfirmModal(false);
+    
+    // For individual predetermined guests, create a proper group structure
+    // that indicates this is a predetermined guest that should be updated
     const tempGroup = {
-      id: `individual_${guest.id}`,
+      id: guest.group_id || `individual_${guest.id}`,
       group_name: guest.name,
-      is_predetermined: false,
+      is_predetermined: true, // This guest exists in database, should be updated not created
       guest_type: guest.guest_type,
       role: 'individual',
       isIndividual: true,
@@ -109,6 +117,7 @@ const RSVPList = () => {
     };
     
     setSelectedGroup(tempGroup);
+    setSelectedGuest(guest); // Set the actual guest object for predetermined individual guests
     setIsModalOpen(true);
   };
 

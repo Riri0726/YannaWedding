@@ -540,16 +540,41 @@ h1, h2, h3, h4 {
   padding: 0;
 }
 
-/* Responsive Design */
+/* Responsive Design - Enhanced */
+@media (max-width: 1200px) {
+  .section-container {
+    max-width: 100%;
+    padding: 0 30px;
+  }
+  
+  .hero {
+    padding: 120px 0;
+  }
+  
+  .hero .date {
+    font-size: 3rem;
+  }
+}
+
 @media (max-width: 768px) {
+  .section-container {
+    padding: 0 20px;
+  }
+  
+  .hero {
+    padding: 80px 0;
+  }
+  
   .countdown-timer {
     flex-wrap: wrap;
     gap: 15px;
+    justify-content: center;
   }
   
   .time-block {
     min-width: 130px;
     padding: 20px;
+    margin: 5px;
   }
   
   .time-block span {
@@ -558,10 +583,12 @@ h1, h2, h3, h4 {
   
   .couple-names h1 {
     font-size: 2.5rem;
+    line-height: 1.2;
   }
   
   .hero .date {
     font-size: 2.5rem;
+    margin-bottom: 20px;
   }
   
   .timeline-events::before {
@@ -570,6 +597,12 @@ h1, h2, h3, h4 {
   
   .event {
     margin: 20px 0;
+    text-align: center;
+  }
+  
+  .invitation-btn {
+    padding: 16px 30px;
+    font-size: 1.1rem;
   }
 }
 
@@ -577,14 +610,64 @@ h1, h2, h3, h4 {
   .section-container {
     padding: 0 15px;
   }
-
+  
+  .hero {
+    padding: 60px 0;
+  }
+  
+  .hero .date {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  .couple-names h1 {
+    font-size: 2rem;
+  }
+  
   .time-block {
     min-width: 100px;
+    padding: 15px;
+  }
+  
+  .time-block span {
+    font-size: 2rem;
+  }
+  
+  .time-block .label {
+    font-size: 0.9rem;
   }
   
   .invitation-btn {
     padding: 15px 25px;
     font-size: 1rem;
+    letter-spacing: 1px;
+  }
+}
+
+@media (max-width: 360px) {
+  .section-container {
+    padding: 0 10px;
+  }
+  
+  .hero .date {
+    font-size: 1.8rem;
+  }
+  
+  .couple-names h1 {
+    font-size: 1.8rem;
+  }
+  
+  .countdown-timer {
+    gap: 10px;
+  }
+  
+  .time-block {
+    min-width: 80px;
+    padding: 12px;
+  }
+  
+  .time-block span {
+    font-size: 1.8rem;
   }
 }
 
@@ -680,16 +763,43 @@ h1, h2, h3, h4 {
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  justify-content: center;
   width: 100%;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .search-container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  flex: 1;
+  padding: 16px 24px;
+  font-size: 1rem;
+  border: 2px solid var(--primary-color);
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-btn {
+  padding: 16px 20px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
 }
 
 .search-input {
@@ -768,13 +878,33 @@ h1, h2, h3, h4 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   padding: 20px;
   box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Confirm modal overlay with transparent background to avoid double overlay effect */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  padding: 20px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .modal-content {
@@ -783,7 +913,8 @@ h1, h2, h3, h4 {
   border-radius: 10px;
   max-width: 500px;
   width: 100%;
-  max-height: 90vh;
+  height: auto;
+  min-height: 500px;
   overflow-y: auto;
   position: relative;
   box-sizing: border-box;
@@ -1216,13 +1347,25 @@ h1, h2, h3, h4 {
   }
 
   .search-container {
-    flex-direction: column;
-    gap: 15px;
+    max-width: 95%;
+    gap: 10px;
   }
 
-  .search-input,
+  .search-input {
+    padding: 14px 18px;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+
   .search-btn {
-    width: 100%;
+    padding: 14px 18px;
+    min-width: 55px;
+    border-radius: 8px;
+  }
+  
+  .search-section {
+    margin-bottom: 20px;
+    gap: 15px;
   }
 
   .side-switch {
@@ -1333,6 +1476,28 @@ h1, h2, h3, h4 {
   .schedule,
   .faq {
     padding: 30px 12px;
+  }
+
+  .search-container {
+    max-width: 90%;
+    gap: 8px;
+  }
+  
+  .search-input {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+  
+  .search-btn {
+    padding: 12px 16px;
+    min-width: 50px;
+    border-radius: 8px;
+  }
+  
+  .search-section {
+    margin-bottom: 15px;
+    gap: 12px;
   }
 
   .time-block {
@@ -1626,10 +1791,18 @@ h1, h2, h3, h4 {
   margin-top: 20px;
 }
 
-/* Responsive design for uniform cards */
-@media (max-width: 768px) {
+/* Responsive design for uniform cards - Enhanced */
+@media (max-width: 1200px) {
   .uniform-guest-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 18px;
+    padding: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .uniform-guest-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 15px;
     padding: 15px;
   }
@@ -1646,12 +1819,13 @@ h1, h2, h3, h4 {
   
   .section-title {
     font-size: 1.8rem;
+    margin-bottom: 25px;
   }
 }
 
 @media (max-width: 480px) {
   .uniform-guest-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 12px;
     padding: 12px;
   }
@@ -1664,6 +1838,7 @@ h1, h2, h3, h4 {
   
   .uniform-guest-card h4 {
     font-size: 1.1rem;
+    line-height: 1.2;
   }
   
   .uniform-guest-card .respond-btn {
@@ -1674,5 +1849,33 @@ h1, h2, h3, h4 {
   .section-title {
     font-size: 1.6rem;
     margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 360px) {
+  .uniform-guest-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .uniform-guest-card {
+    min-height: 120px;
+    max-height: 120px;
+    padding: 12px;
+  }
+  
+  .uniform-guest-card h4 {
+    font-size: 1rem;
+  }
+  
+  .uniform-guest-card .respond-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
   }
 }

@@ -21,18 +21,34 @@ const RSVPModal = () => {
   const [guestNames, setGuestNames] = useState(['']);
   const [isComing, setIsComing] = useState(true);
   
+  // Calculate remaining slots and companion limits
   const remainingSlots = selectedGroup?.group_count_max && Array.isArray(groupGuests)
     ? Math.max(0, selectedGroup.group_count_max - groupGuests.length)
     : undefined;
     
-  console.log('Debug remainingSlots:', {
-    group_count_max: selectedGroup?.group_count_max,
-    groupGuests: groupGuests,
-    groupGuestsLength: Array.isArray(groupGuests) ? groupGuests.length : 'not array',
-    remainingSlots: remainingSlots
-  });
-  const maxSlots = typeof remainingSlots === 'number' ? remainingSlots : Infinity;
-  const canAddMoreGuests = guestNames.length < maxSlots;
+  // Check if this is an individual guest (either predetermined individual or temp individual group)
+  const isIndividualGuest = (selectedGroup?.is_predetermined && selectedGuest) || 
+                           (selectedGroup?.role === 'individual' && selectedGroup?.isIndividual);
+  
+  // For individual guests, check their personal max_count
+  const individualMaxCount = isIndividualGuest 
+    ? (selectedGuest?.max_count ?? selectedGroup?.originalGuest?.max_count ?? 1)
+    : 0;
+  
+  // Determine max slots based on context
+  let maxSlots;
+  if (isIndividualGuest) {
+    // For individual guests, use their personal max_count
+    maxSlots = individualMaxCount;
+  } else {
+    // For group guests, use remaining slots or Infinity
+    maxSlots = typeof remainingSlots === 'number' ? remainingSlots : Infinity;
+  }
+  
+  // Can add more guests only if max_count > 1 (meaning companions are allowed)
+  const canAddMoreGuests = isIndividualGuest 
+    ? (individualMaxCount > 1 && guestNames.length < individualMaxCount)
+    : (guestNames.length < maxSlots);
 
   // Reset form when modal closes or family changes
   useEffect(() => {
@@ -40,8 +56,30 @@ const RSVPModal = () => {
       setEmail('');
       setGuestNames(['']);
       setIsComing(true);
+    } else {
+      // When modal opens, initialize form based on context
+      if (isIndividualGuest && selectedGuest?.name) {
+        // For individual predetermined guests, pre-populate their name
+        setGuestNames([selectedGuest.name]);
+      } else if (isIndividualGuest && selectedGroup?.group_name) {
+        // For individual temp groups, use the group name
+        setGuestNames([selectedGroup.group_name]);
+      } else {
+        // For other cases, start with empty
+        setGuestNames(['']);
+      }
+      
+      // Pre-populate email if available
+      if (selectedGuest?.email) {
+        setEmail(selectedGuest.email);
+      }
+      
+      // Pre-populate coming status if available
+      if (selectedGuest?.is_coming !== undefined) {
+        setIsComing(selectedGuest.is_coming);
+      }
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, isIndividualGuest, selectedGuest, selectedGroup]);
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -57,7 +95,17 @@ const RSVPModal = () => {
 
     try {
       if (selectedGroup.is_predetermined && selectedGuest) {
-        await adminService.updateGuestRSVP(selectedGuest.id, { email, is_coming: isComing });
+        // For predetermined guests (including individual guests)
+        const updateData = { email, is_coming: isComing };
+        
+        // For individual guests who are coming, also update their name
+        if (isIndividualGuest && isComing) {
+          // Use the guest's existing name or the first guest name if they entered one
+          const guestName = selectedGuest.name || (guestNames[0]?.trim() || selectedGroup.group_name);
+          updateData.name = guestName;
+        }
+        
+        await adminService.updateGuestRSVP(selectedGuest.id, updateData);
       } else if (!selectedGroup.is_predetermined) {
         // For unknown groups, just submit the new response
         // The admin can handle status changes and record cleanup
@@ -225,6 +273,14 @@ const RSVPModal = () => {
           <p className="guest-limit-info">Enter guest names for this group</p>
         )}
         
+        {selectedGroup?.is_predetermined && selectedGuest && isIndividualGuest && (
+          <p className="guest-limit-info">Please confirm your attendance</p>
+        )}
+        
+        {selectedGroup?.is_predetermined && selectedGuest && !isIndividualGuest && (
+          <p className="guest-limit-info">Enter guest names for this group</p>
+        )}
+        
         <form onSubmit={handleSubmit} className="rsvp-form">
           {(!selectedGroup?.is_predetermined || (selectedGroup?.is_predetermined && selectedGuest)) && (
             <div className="form-group">
@@ -273,52 +329,75 @@ const RSVPModal = () => {
               </div>
               
               {isComing && (
-                <div className="form-group">
-                  <label>Names of Attending Guests:</label>
-                  <div className="guest-inputs">
-                    {guestNames.map((name, index) => (
-                      <div key={index} className="guest-input-row">
-                        <input
-                          type="text"
-                          value={name}
-                          onChange={(e) => handleGuestNameChange(index, e.target.value)}
-                          placeholder="Enter guest name"
-                          className="guest-name-input"
-                          required
-                        />
-                        {index > 0 && (
+                <>
+                  {/* Only show Names section if companions are allowed OR it's not an individual guest */}
+                  {(!isIndividualGuest || individualMaxCount > 1) && (
+                    <div className="form-group">
+                      <label>Names of Attending Guests:</label>
+                      <div className="guest-inputs">
+                        {guestNames.map((name, index) => (
+                          <div key={index} className="guest-input-row">
+                            <input
+                              type="text"
+                              value={name}
+                              onChange={(e) => handleGuestNameChange(index, e.target.value)}
+                              placeholder="Enter guest name"
+                              className="guest-name-input"
+                              required
+                            />
+                            {index > 0 && (
+                              <button 
+                                type="button" 
+                                className="remove-guest-btn"
+                                onClick={() => removeGuestInput(index)}
+                              >
+                                ×
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {canAddMoreGuests && (
                           <button 
                             type="button" 
-                            className="remove-guest-btn"
-                            onClick={() => removeGuestInput(index)}
+                            className="add-guest-btn"
+                            onClick={addGuestInput}
                           >
-                            ×
+                            + Add Another Guest
                           </button>
                         )}
+                        {isIndividualGuest && individualMaxCount > 1 && (
+                          <span style={{ fontSize: 12, color: '#667085' }}>
+                            Can bring {Math.max(0, individualMaxCount - guestNames.length)} more companions
+                          </span>
+                        )}
+                        {!isIndividualGuest && maxSlots !== Infinity && (
+                          <span style={{ fontSize: 12, color: '#667085' }}>
+                            Remaining slots: {Math.max(0, maxSlots - guestNames.length)}
+                          </span>
+                        )}
+                        {!isIndividualGuest && maxSlots === Infinity && (
+                          <span style={{ fontSize: 12, color: '#667085' }}>No limit on guests</span>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {canAddMoreGuests && (
-                      <button 
-                        type="button" 
-                        className="add-guest-btn"
-                        onClick={addGuestInput}
-                      >
-                        + Add Another Guest
-                      </button>
-                    )}
-                    {typeof remainingSlots === 'number' && (
-                      <span style={{ fontSize: 12, color: '#667085' }}>Remaining slots: {Math.max(0, maxSlots - guestNames.length)}</span>
-                    )}
-                  </div>
-                </div>
+                    </div>
+                  )}
+                  
+                  {/* Show simple message for individual guests with no companions allowed */}
+                  {isIndividualGuest && individualMaxCount <= 1 && (
+                    <div style={{ padding: '16px', backgroundColor: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+                      <span style={{ fontSize: '14px', color: '#667085' }}>
+                        ✅ You're confirming attendance for: <strong>{selectedGroup?.group_name}</strong>
+                      </span>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}
 
           {error && <div className="error-message">{error}</div>}
-          
           
            
            <button 
@@ -328,7 +407,9 @@ const RSVPModal = () => {
                loading || 
                (selectedGroup?.is_predetermined && !selectedGuest) ||
                (!selectedGroup?.is_predetermined && typeof remainingSlots === 'number' && guestNames.length > remainingSlots) ||
-               (!selectedGroup?.is_predetermined && isComing === true && guestNames.filter(n => n.trim()).length === 0)
+               (!selectedGroup?.is_predetermined && isComing === true && guestNames.filter(n => n.trim()).length === 0) ||
+               // For individual guests, require email if coming
+               (isIndividualGuest && isComing && !email.trim())
              }
            >
              {loading ? 'Submitting...' : 'Submit RSVP'}
