@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase.js';
-import { adminService } from '../services/rsvpService';
+import { adminService, guestService } from '../services/rsvpService';
 import Dashboard from './Dashboard';
 import GuestsAdmin from './GuestsAdmin';
 import './Admin.css';
@@ -17,6 +17,7 @@ const Admin = () => {
   const [guestForm, setGuestForm] = useState({ group_id: '', name: '', email: '', is_coming: true, in_group: true });
   const [guestsByGroup, setGuestsByGroup] = useState({});
   const [allGuests, setAllGuests] = useState([]);
+  const [individualGuests, setIndividualGuests] = useState([]);
   const [editingGroup, setEditingGroup] = useState(null);
   const [filter, setFilter] = useState('all');
   const [newGroupName, setNewGroupName] = useState('');
@@ -41,20 +42,25 @@ const Admin = () => {
 
   const refresh = async () => {
     try {
+      // Get groups first
       const groupsList = await adminService.listGroups();
       setGroups(groupsList);
       
-      // Get guests for each group
+      // Get ALL guests (both individual and in groups) using the new guestService
+      const allGuestsList = await guestService.getAllGuests();
+      setAllGuests(allGuestsList);
+      
+      // Separate individual guests (those without group_id or role === 'individual')
+      const individualGuestsList = allGuestsList.filter(guest => !guest.group_id || guest.role === 'individual');
+      setIndividualGuests(individualGuestsList);
+      
+      // Organize guests by group for the existing UI structure
       const guestsData = {};
       for (const group of groupsList) {
-        const guests = await adminService.listGuestsByGroup(group.id);
-        guestsData[group.id] = guests;
+        guestsData[group.id] = allGuestsList.filter(guest => guest.group_id === group.id);
       }
       setGuestsByGroup(guestsData);
       
-      // Get all guests for stats
-      const allGuestsList = await adminService.listAllGuests();
-      setAllGuests(allGuestsList);
     } catch (e) {
       showMessage(e.message || 'Failed to refresh data', 'error');
     }
@@ -271,13 +277,13 @@ const Admin = () => {
           className={`admin-nav-btn ${activePage === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActivePage('dashboard')}
         >
-          Dashboard
+          📊 Dashboard
         </button>
         <button
           className={`admin-nav-btn ${activePage === 'guests' ? 'active' : ''}`}
           onClick={() => setActivePage('guests')}
         >
-          Guests
+          👥 Guests
         </button>
         <div className="admin-sidebar-footer">
           <button
@@ -301,6 +307,7 @@ const Admin = () => {
           <GuestsAdmin
             groups={groups}
             guestsByGroup={guestsByGroup}
+            individualGuests={individualGuests}
             filter={filter}
             setFilter={setFilter}
             newGroupName={newGroupName}

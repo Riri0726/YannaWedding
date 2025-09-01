@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { adminService } from '../services/rsvpService';
+import { adminService, guestService } from '../services/rsvpService';
 
 // Sample family list data
 const initialFamilies = [
@@ -45,6 +45,12 @@ const RSVPContext = createContext();
 
 export const RSVPProvider = ({ children }) => {
   const [groups, setGroups] = useState([]);
+  const [individualGuests, setIndividualGuests] = useState([]);
+  const [organizedData, setOrganizedData] = useState({
+    individual: [],
+    family: [],
+    friends: []
+  });
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [groupGuests, setGroupGuests] = useState([]);
   const [guestsByGroup, setGuestsByGroup] = useState({});
@@ -55,28 +61,49 @@ export const RSVPProvider = ({ children }) => {
 
   // Load groups and guests
   useEffect(() => {
-    const loadFamilies = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        const fetched = await adminService.listGroups();
-        setGroups(fetched);
         
-        // Load guests for all groups
+        // Load groups
+        const fetchedGroups = await adminService.listGroups();
+        setGroups(fetchedGroups);
+        
+        // Load ALL guests (both individual and in groups)
+        const allGuests = await guestService.getAllGuests();
+        
+        // Separate individual guests (those with role = 'individual' and not in groups)
+        const individualGuestsList = allGuests.filter(guest => 
+          guest.role === 'individual' && 
+          guest.in_group === false && 
+          !guest.group_id
+        );
+        setIndividualGuests(individualGuestsList);
+        
+        // Load guests for groups
         const guestsData = {};
-        for (const group of fetched) {
-          const guests = await adminService.listGuestsByGroup(group.id);
-          guestsData[group.id] = guests;
+        for (const group of fetchedGroups) {
+          guestsData[group.id] = allGuests.filter(guest => guest.group_id === group.id);
         }
         setGuestsByGroup(guestsData);
+        
+        // Organize data for main page display
+        const organized = {
+          individual: individualGuestsList,
+          family: fetchedGroups.filter(group => group.role === 'family'),
+          friends: fetchedGroups.filter(group => group.role === 'friends')
+        };
+        setOrganizedData(organized);
+        
       } catch (err) {
-        console.error('Error loading groups:', err);
-        setError('Failed to load groups');
+        console.error('Error loading data:', err);
+        setError('Failed to load data');
       } finally {
         setLoading(false);
       }
     };
 
-    loadFamilies();
+    loadData();
   }, []);
 
   const openGroup = async (group) => {
@@ -94,16 +121,37 @@ export const RSVPProvider = ({ children }) => {
   const refresh = async () => {
     try {
       setLoading(true);
-      const fetched = await adminService.listGroups();
-      setGroups(fetched);
       
-      // Load guests for all groups
+      // Load groups
+      const fetchedGroups = await adminService.listGroups();
+      setGroups(fetchedGroups);
+      
+      // Load ALL guests (both individual and in groups)
+      const allGuests = await guestService.getAllGuests();
+      
+      // Separate individual guests (those with role = 'individual' and not in groups)
+      const individualGuestsList = allGuests.filter(guest => 
+        guest.role === 'individual' && 
+        guest.in_group === false && 
+        !guest.group_id
+      );
+      setIndividualGuests(individualGuestsList);
+      
+      // Load guests for groups
       const guestsData = {};
-      for (const group of fetched) {
-        const guests = await adminService.listGuestsByGroup(group.id);
-        guestsData[group.id] = guests;
+      for (const group of fetchedGroups) {
+        guestsData[group.id] = allGuests.filter(guest => guest.group_id === group.id);
       }
       setGuestsByGroup(guestsData);
+      
+      // Organize data for main page display
+      const organized = {
+        individual: individualGuestsList,
+        family: fetchedGroups.filter(group => group.role === 'family'),
+        friends: fetchedGroups.filter(group => group.role === 'friends')
+      };
+      setOrganizedData(organized);
+      
     } catch (err) {
       console.error('Error refreshing data:', err);
       setError('Failed to refresh data');
@@ -114,6 +162,8 @@ export const RSVPProvider = ({ children }) => {
 
   const value = {
     groups,
+    individualGuests,
+    organizedData,
     selectedGroup,
     setSelectedGroup: openGroup,
     groupGuests,

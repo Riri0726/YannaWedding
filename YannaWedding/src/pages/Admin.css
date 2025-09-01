@@ -286,6 +286,9 @@
 
 .add-group-section {
   margin-bottom: 32px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .add-group-btn {
@@ -302,6 +305,14 @@
 
 .add-group-btn:hover {
   background: #2563eb;
+}
+
+.add-group-btn.individual-btn {
+  background: #10b981;
+}
+
+.add-group-btn.individual-btn:hover {
+  background: #059669;
 }
 
 /* Group Cards */

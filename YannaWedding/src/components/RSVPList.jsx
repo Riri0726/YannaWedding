@@ -30,7 +30,7 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message, confirmText
 };
 
 const RSVPList = () => {
-  const { groups, setSelectedGroup, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
+  const { groups, organizedData, setSelectedGroup, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
   const [selectedSide, setSelectedSide] = useState('select');
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState(null);
@@ -88,20 +88,57 @@ const RSVPList = () => {
     setIsModalOpen(true);
   };
 
-  // Filter groups based on selected side and search term
-  const filteredGroups = groups.filter(group => {
-    // First filter by guest type (bride/groom)
-    if (selectedSide !== 'select' && group.guest_type !== selectedSide) {
-      return false;
+  const handleIndividualGuestClick = (guest) => {
+    // Check if guest already has final status
+    if (guest.is_coming !== null) {
+      return; // Don't open modal if guest has final status
     }
     
-    // Then filter by search term
-    if (searchTerm && !group.group_name.toLowerCase().includes(searchTerm.toLowerCase())) {
-      return false;
-    }
+    // Expose toast function to modal
+    window.showToast = showToast;
     
-    return true;
-  });
+    // Create a temporary group structure for the individual guest
+    const tempGroup = {
+      id: `individual_${guest.id}`,
+      group_name: guest.name,
+      is_predetermined: false,
+      guest_type: guest.guest_type,
+      role: 'individual',
+      isIndividual: true,
+      originalGuest: guest
+    };
+    
+    setSelectedGroup(tempGroup);
+    setIsModalOpen(true);
+  };
+
+  // Filter data based on selected side and search term
+  const getFilteredData = () => {
+    if (selectedSide === 'select') return { individual: [], family: [], friends: [] };
+    
+    const filterByGuestType = (items, isGuest = false) => {
+      return items.filter(item => {
+        // Filter by guest type (bride/groom)
+        if (item.guest_type !== selectedSide) return false;
+        
+        // Filter by search term
+        const searchField = isGuest ? item.name : item.group_name;
+        if (searchTerm && !searchField.toLowerCase().includes(searchTerm.toLowerCase())) {
+          return false;
+        }
+        
+        return true;
+      });
+    };
+    
+    return {
+      individual: filterByGuestType(organizedData.individual || [], true),
+      family: filterByGuestType(organizedData.family || []),
+      friends: filterByGuestType(organizedData.friends || [])
+    };
+  };
+
+  const filteredData = getFilteredData();
 
 
 
@@ -189,53 +226,138 @@ const RSVPList = () => {
           {error && <div className="error">{error}</div>}
           {loading && <div>Loading...</div>}
           
-          {filteredGroups.length === 0 ? (
+          {(filteredData.individual.length === 0 && filteredData.family.length === 0 && filteredData.friends.length === 0) ? (
             <div className="no-results">
               {searchTerm ? `No ${selectedSide} guests found matching "${searchTerm}"` : `No ${selectedSide} guests found`}
             </div>
           ) : (
-            <div className="guest-grid">
-              {filteredGroups.map((group) => {
-                const groupGuests = guestsByGroup[group.id] || [];
-                
-                // Determine if card should be locked
-                let isLocked = false;
-                if (group.is_predetermined) {
-                  // For predetermined groups: only lock if ALL guests have final status (Going/Not Going)
-                  // If no guests exist yet, don't lock
-                  if (groupGuests.length === 0) {
-                    isLocked = false;
-                  } else {
-                    isLocked = groupGuests.every(guest => guest.is_coming !== null);
-                  }
-                } else {
-                  // For unknown groups: lock if they have final status (Going/Not Going)
-                  // Admin can unlock by changing status to Pending (is_coming = null)
-                  const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
-                  isLocked = hasFinalStatus;
-                }
-                
-                return (
-                  <div
-                    key={group.id}
-                    className={`guest-card ${isLocked ? 'locked' : ''}`}
-                  >
-                    <h3>{group.group_name}</h3>
-                    {isLocked ? (
-                      <div className="lock-indicator">
-                        {group.is_predetermined ? '🔒 All Guests Responded' : '🔒 Response Submitted'}
-                      </div>
-                    ) : (
-                      <button 
-                        className="respond-btn"
-                        onClick={() => handleGroupClick(group)}
-                      >
-                        Respond
-                      </button>
-                    )}
+            <div className="guest-sections">
+              
+              {/* INDIVIDUAL GUESTS SECTION */}
+              {filteredData.individual.length > 0 && (
+                <div className="guest-section">
+                  <h3 className="section-title">Individual Guests</h3>
+                  <div className="uniform-guest-grid">
+                    {filteredData.individual.map((guest) => {
+                      const isLocked = guest.is_coming !== null;
+                      
+                      return (
+                        <div
+                          key={`individual_${guest.id}`}
+                          className={`uniform-guest-card ${isLocked ? 'locked' : ''}`}
+                        >
+                          <h4>{guest.name}</h4>
+                          {isLocked ? (
+                            <div className="lock-indicator">
+                              🔒 Response Submitted
+                            </div>
+                          ) : (
+                            <button 
+                              className="respond-btn"
+                              onClick={() => handleIndividualGuestClick(guest)}
+                            >
+                              Respond
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              })}
+                </div>
+              )}
+
+              {/* FAMILY GROUPS SECTION */}
+              {filteredData.family.length > 0 && (
+                <div className="guest-section">
+                  <h3 className="section-title">Family Groups</h3>
+                  <div className="uniform-guest-grid">
+                    {filteredData.family.map((group) => {
+                      const groupGuests = guestsByGroup[group.id] || [];
+                      
+                      // Determine if card should be locked
+                      let isLocked = false;
+                      if (group.is_predetermined) {
+                        if (groupGuests.length === 0) {
+                          isLocked = false;
+                        } else {
+                          isLocked = groupGuests.every(guest => guest.is_coming !== null);
+                        }
+                      } else {
+                        const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
+                        isLocked = hasFinalStatus;
+                      }
+                      
+                      return (
+                        <div
+                          key={group.id}
+                          className={`uniform-guest-card ${isLocked ? 'locked' : ''}`}
+                        >
+                          <h4>{group.group_name}</h4>
+                          {isLocked ? (
+                            <div className="lock-indicator">
+                              {group.is_predetermined ? '🔒 All Guests Responded' : '🔒 Response Submitted'}
+                            </div>
+                          ) : (
+                            <button 
+                              className="respond-btn"
+                              onClick={() => handleGroupClick(group)}
+                            >
+                              Respond
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* FRIENDS GROUPS SECTION */}
+              {filteredData.friends.length > 0 && (
+                <div className="guest-section">
+                  <h3 className="section-title">Friends Groups</h3>
+                  <div className="uniform-guest-grid">
+                    {filteredData.friends.map((group) => {
+                      const groupGuests = guestsByGroup[group.id] || [];
+                      
+                      // Determine if card should be locked
+                      let isLocked = false;
+                      if (group.is_predetermined) {
+                        if (groupGuests.length === 0) {
+                          isLocked = false;
+                        } else {
+                          isLocked = groupGuests.every(guest => guest.is_coming !== null);
+                        }
+                      } else {
+                        const hasFinalStatus = groupGuests.some(guest => guest.is_coming !== null);
+                        isLocked = hasFinalStatus;
+                      }
+                      
+                      return (
+                        <div
+                          key={group.id}
+                          className={`uniform-guest-card ${isLocked ? 'locked' : ''}`}
+                        >
+                          <h4>{group.group_name}</h4>
+                          {isLocked ? (
+                            <div className="lock-indicator">
+                              {group.is_predetermined ? '🔒 All Guests Responded' : '🔒 Response Submitted'}
+                            </div>
+                          ) : (
+                            <button 
+                              className="respond-btn"
+                              onClick={() => handleGroupClick(group)}
+                            >
+                              Respond
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
             </div>
           )}
         </>
