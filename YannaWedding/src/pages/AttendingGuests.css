@@ -1,0 +1,214 @@
+.attending-guests {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-filters {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-input,
+.filter-select,
+.sort-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.search-input {
+  min-width: 200px;
+}
+
+.export-btn {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-btn:hover {
+  background: #229954;
+}
+
+.stats-row {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  min-width: 120px;
+}
+
+.stat-number {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.stat-label {
+  display: block;
+  font-size: 14px;
+  color: #7f8c8d;
+  margin-top: 5px;
+}
+
+.guests-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.guests-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.guests-table th {
+  background: #34495e;
+  color: white;
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.guests-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.guests-table tr:hover {
+  background: #f8f9fa;
+}
+
+.guest-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.guest-email {
+  color: #7f8c8d;
+}
+
+.guest-side {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.guest-side.bride {
+  background: #ffeaa7;
+  color: #2d3436;
+}
+
+.guest-side.groom {
+  background: #74b9ff;
+  color: white;
+}
+
+.guest-group {
+  color: #636e72;
+}
+
+.guest-role {
+  color: #636e72;
+  font-style: italic;
+}
+
+.guest-rsvp-date {
+  color: #636e72;
+  font-size: 13px;
+}
+
+.loading,
+.error,
+.no-guests {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7f8c8d;
+  font-size: 16px;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-filters {
+    flex-direction: column;
+  }
+  
+  .search-input,
+  .filter-select,
+  .sort-select {
+    width: 100%;
+  }
+  
+  .guests-table {
+    overflow-x: auto;
+  }
+  
+  .guests-table table {
+    min-width: 600px;
+  }
+  
+  .stats-row {
+    gap: 15px;
+  }
+  
+  .stat-item {
+    min-width: 100px;
+  }
+}

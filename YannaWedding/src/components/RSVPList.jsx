@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRSVP } from '../context/RSVPContext';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import RSVPModal from './RSVPModal';
 
 // Toast notification component
 const Toast = ({ message, type, onClose }) => (
@@ -30,7 +29,7 @@ const ConfirmModal = ({ isOpen, onConfirm, onCancel, title, message, confirmText
 };
 
 const RSVPList = () => {
-  const { groups, organizedData, setSelectedGroup, setSelectedGuest, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
+  const { organizedData, setSelectedGroup, setSelectedGuest, setIsModalOpen, loading, error, guestsByGroup } = useRSVP();
   const [selectedSide, setSelectedSide] = useState('select');
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState(null);
@@ -40,12 +39,6 @@ const RSVPList = () => {
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 5000);
-  };
-
-  const openConfirmModal = (action, title, message) => {
-    setConfirmAction(action);
-    setIsModalOpen(false); // Ensure RSVP modal is closed
-    setShowConfirmModal(true);
   };
 
   const handleConfirm = () => {
@@ -371,9 +364,6 @@ const RSVPList = () => {
           )}
         </>
       )}
-
-             {/* RSVP Modal */}
-       <RSVPModal />
      </div>
    );
  };

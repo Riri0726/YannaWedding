@@ -4,17 +4,30 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 const Dashboard = ({ groups, allGuests }) => {
   // Calculate expected guests based on max_count (total capacity)
   const calculateExpectedGuests = () => {
-    return groups.reduce((total, group) => {
+    let total = 0;
+    
+    // Count capacity from groups
+    total += groups.reduce((groupTotal, group) => {
       if (group.group_count_max) {
-        // For family/group guests, use group_count_max
-        return total + group.group_count_max;
+        // For family/friends groups, use group_count_max
+        return groupTotal + group.group_count_max;
       } else {
-        // For individual guests, count their max_count
+        // For groups without max, count their actual guests' max_count
         const groupGuests = allGuests.filter(guest => guest.group_id === group.id);
         const maxCount = groupGuests.reduce((sum, guest) => sum + (guest.max_count || 1), 0);
-        return total + maxCount;
+        return groupTotal + maxCount;
       }
     }, 0);
+    
+    // Add standalone individual guests (not in any group)
+    const standaloneGuests = allGuests.filter(guest => 
+      guest.role === 'individual' && 
+      guest.in_group === false && 
+      !guest.group_id
+    );
+    total += standaloneGuests.reduce((sum, guest) => sum + (guest.max_count || 1), 0);
+    
+    return total;
   };
 
   const totalExpectedGuests = calculateExpectedGuests();
@@ -45,7 +58,7 @@ const Dashboard = ({ groups, allGuests }) => {
   // Calculate expected vs actual by guest type
   const calculateByGuestType = (guestType) => {
     const typeGroups = groups.filter(g => g.guest_type === guestType);
-    const expectedCount = typeGroups.reduce((total, group) => {
+    let expectedCount = typeGroups.reduce((total, group) => {
       if (group.group_count_max) {
         return total + group.group_count_max;
       } else {
@@ -54,14 +67,27 @@ const Dashboard = ({ groups, allGuests }) => {
       }
     }, 0);
     
+    // Add standalone individual guests of this guest_type
+    const standaloneGuests = allGuests.filter(guest => 
+      guest.role === 'individual' && 
+      guest.in_group === false && 
+      !guest.group_id &&
+      guest.guest_type === guestType
+    );
+    expectedCount += standaloneGuests.reduce((sum, guest) => sum + (guest.max_count || 1), 0);
+    
+    // Count actual guests from groups
     const actualGuests = allGuests.filter(g => {
       const group = groups.find(grp => grp.id === g.group_id);
       return group && group.guest_type === guestType;
     });
     
-    const respondedCount = actualGuests.filter(g => g.rsvp_submitted).length;
-    const goingCount = actualGuests.filter(g => g.is_coming === true).length;
-    const notGoingCount = actualGuests.filter(g => g.is_coming === false).length;
+    // Add standalone individual guests
+    const allActualGuests = [...actualGuests, ...standaloneGuests];
+    
+    const respondedCount = allActualGuests.filter(g => g.rsvp_submitted).length;
+    const goingCount = allActualGuests.filter(g => g.is_coming === true).length;
+    const notGoingCount = allActualGuests.filter(g => g.is_coming === false).length;
     
     return {
       expected: expectedCount,
@@ -69,18 +95,30 @@ const Dashboard = ({ groups, allGuests }) => {
       pending: expectedCount - respondedCount,
       going: goingCount,
       notGoing: notGoingCount,
-      groups: typeGroups.length,
-      individuals: typeGroups.filter(g => !g.group_count_max).length
+      groups: typeGroups.length, // Just count the actual groups (family + friends)
+      individuals: standaloneGuests.length, // Only standalone individual guests
+      totalInvitations: typeGroups.length + standaloneGuests.length // Groups + individuals
     };
   };
 
   const brideStats = calculateByGuestType('bride');
   const groomStats = calculateByGuestType('groom');
   
-  // Count total groups and individuals
+  // Count total groups and individuals properly
   const totalGroups = groups.length;
-  const familyGroups = groups.filter(g => g.group_count_max).length;
-  const individualGuests = groups.filter(g => !g.group_count_max).length;
+  const familyGroups = groups.filter(g => g.role === 'family').length;
+  const friendsGroups = groups.filter(g => g.role === 'friends').length;
+  const individualGroups = groups.filter(g => g.role === 'individual').length;
+  
+  // Count standalone individual guests (not in groups)
+  const standaloneIndividuals = allGuests.filter(guest => 
+    guest.role === 'individual' && 
+    guest.in_group === false && 
+    !guest.group_id
+  ).length;
+  
+  const totalIndividualGuests = individualGroups + standaloneIndividuals;
+  const totalInvitations = totalGroups + standaloneIndividuals; // Groups + standalone individuals
 
   // Create chart data
   const overviewData = [
@@ -145,17 +183,22 @@ const Dashboard = ({ groups, allGuests }) => {
         <div className="stat-card">
           <h3>Total Groups</h3>
           <p className="stat-number">{totalGroups}</p>
-          <small>All invitations sent</small>
+          <small>All group invitations</small>
         </div>
         <div className="stat-card">
           <h3>Family Groups</h3>
           <p className="stat-number">{familyGroups}</p>
-          <small>Multi-person invites</small>
+          <small>Family invites</small>
+        </div>
+        <div className="stat-card">
+          <h3>Friends Groups</h3>
+          <p className="stat-number">{friendsGroups}</p>
+          <small>Friends invites</small>
         </div>
         <div className="stat-card">
           <h3>Individual Guests</h3>
-          <p className="stat-number">{individualGuests}</p>
-          <small>Single invites</small>
+          <p className="stat-number">{totalIndividualGuests}</p>
+          <small>Single person invites</small>
         </div>
       </div>
 
@@ -207,8 +250,9 @@ const Dashboard = ({ groups, allGuests }) => {
               <li><strong>Going:</strong> {brideStats.going}</li>
               <li><strong>Not Going:</strong> {brideStats.notGoing}</li>
               <li><strong>Pending:</strong> {brideStats.pending}</li>
-              <li><strong>Total Groups:</strong> {brideStats.groups}</li>
-              <li><strong>Individual Guests:</strong> {brideStats.individuals}</li>
+              <li><strong>Group Invitations:</strong> {brideStats.groups}</li>
+              <li><strong>Individual Invitations:</strong> {brideStats.individuals}</li>
+              <li><strong>Total Invitations:</strong> {brideStats.totalInvitations}</li>
             </ul>
           </div>
           
@@ -220,8 +264,9 @@ const Dashboard = ({ groups, allGuests }) => {
               <li><strong>Going:</strong> {groomStats.going}</li>
               <li><strong>Not Going:</strong> {groomStats.notGoing}</li>
               <li><strong>Pending:</strong> {groomStats.pending}</li>
-              <li><strong>Total Groups:</strong> {groomStats.groups}</li>
-              <li><strong>Individual Guests:</strong> {groomStats.individuals}</li>
+              <li><strong>Group Invitations:</strong> {groomStats.groups}</li>
+              <li><strong>Individual Invitations:</strong> {groomStats.individuals}</li>
+              <li><strong>Total Invitations:</strong> {groomStats.totalInvitations}</li>
             </ul>
           </div>
           
@@ -234,7 +279,7 @@ const Dashboard = ({ groups, allGuests }) => {
               <li><strong>Confirmed Going:</strong> {goingGuests}</li>
               <li><strong>Attendance Rate:</strong> {respondedGuests > 0 ? Math.round((goingGuests / respondedGuests) * 100) : 0}%</li>
               <li><strong>Still Pending:</strong> {pendingGuests}</li>
-              <li><strong>Total Invitations:</strong> {totalGroups}</li>
+              <li><strong>Total Invitations:</strong> {totalInvitations}</li>
             </ul>
           </div>
         </div>

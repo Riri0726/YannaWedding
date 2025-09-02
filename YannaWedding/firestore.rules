@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+
+    // Publicly readable collections for the main page
+    match /groups/{groupId} {
+      // Everyone can read groups to display on the main page
+      allow read: if true;
+      // Only authenticated users (Admin app) can create/update/delete groups
+      allow write: if isSignedIn();
+    }
+
+    match /guests/{guestId} {
+      // Everyone can read guests to display on the main page
+      allow read: if true;
+
+      // Limited public updates for RSVP submission (no auth), only specific fields change
+      // Uses diff() to ensure only these keys are modified
+      allow update: if
+        resource.data.diff(request.resource.data).changedKeys().hasOnly([
+          'email','is_coming','rsvp_submitted','rsvp_date','updatedAt','name'
+        ]) &&
+        // Keep critical identifiers unchanged
+        request.resource.data.group_id == resource.data.group_id &&
+        request.resource.data.in_group == resource.data.in_group;
+
+      // Limited public create for unknown groups submitting RSVP names
+      // Only allow creating simple guest records for RSVP capture with required fields
+      allow create: if
+        request.resource.data.keys().hasOnly([
+          'group_id','name','is_coming','in_group','email','rsvp_submitted','rsvp_date','createdAt'
+        ]) &&
+        // Required minimal fields
+        request.resource.data.group_id is string &&
+        request.resource.data.name is string &&
+        request.resource.data.in_group == true &&
+        // is_coming must be boolean
+        (request.resource.data.is_coming == true || request.resource.data.is_coming == false);
+
+      // Full write access (create/update/delete) for authenticated Admin app
+      allow write: if isSignedIn();
+    }
+
+    // Deny everything else by default
+  }
+}
