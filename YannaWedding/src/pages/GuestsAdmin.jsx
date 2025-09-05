@@ -13,14 +13,7 @@ const GuestsAdmin = ({
   guestsByGroup, 
   individualGuests = [], // Add this new prop
   filter, 
-  setFilter, 
-  newGroupName, 
-  setNewGroupName, 
-  newGroupType, 
-  setNewGroupType, 
-  addGroup, 
-  updateGuestRSVP, 
-  editGuest, 
+  setFilter,
   deleteGuest, 
   // Add these new props
   createGroup,
@@ -28,7 +21,6 @@ const GuestsAdmin = ({
   deleteGroup,
   createGuest,
   updateGuest,
-  deleteGuestFromGroup,
   refresh // Added refresh prop
 }) => {
   const [showAddGroupModal, setShowAddGroupModal] = useState(false);
@@ -91,7 +83,7 @@ const GuestsAdmin = ({
   const handleAddGroup = async (e) => {
     e.preventDefault();
     try {
-      await guestService.createGroupWithGuests(groupForm, [], groupForm.guest_type);
+      await createGroup(groupForm);
       setShowAddGroupModal(false);
       setGroupForm({ group_name: '', group_count_max: '', is_predetermined: false, role: 'family', guest_type: 'bride' });
       refresh(); // Refresh the data

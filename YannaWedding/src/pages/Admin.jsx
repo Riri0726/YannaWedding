@@ -5,6 +5,7 @@ import { adminService, guestService } from '../services/rsvpService';
 import Dashboard from './Dashboard';
 import GuestsAdmin from './GuestsAdmin';
 import AttendingGuests from './AttendingGuests';
+import EmailAdmin from '../components/EmailAdmin';
 import './Admin.css';
 
 const Admin = () => {
@@ -213,6 +214,12 @@ const Admin = () => {
         >
           ✅ Attending Guests
         </button>
+        <button
+          className={`admin-nav-btn ${activePage === 'email' ? 'active' : ''}`}
+          onClick={() => setActivePage('email')}
+        >
+          📧 Email Invitations
+        </button>
         <div className="admin-sidebar-footer">
           <button
             className="admin-logout-btn"
@@ -258,6 +265,9 @@ const Admin = () => {
         )}
         {activePage === 'attending' && (
           <AttendingGuests />
+        )}
+        {activePage === 'email' && (
+          <EmailAdmin guests={allGuests} />
         )}
       </div>
     </div>
