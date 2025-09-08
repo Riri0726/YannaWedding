@@ -1,0 +1,134 @@
+.landing-door-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.bg-panel {
+  position: absolute;
+  inset: 0;
+  background: rgba(245, 240, 235, 0.6); /* nude/neutral warm tint */
+  -webkit-backdrop-filter: blur(6px) saturate(1.05);
+  backdrop-filter: blur(6px) saturate(1.05);
+  opacity: 0;
+  transition: opacity 520ms ease;
+  pointer-events: none;
+}
+
+.bg-panel.show { opacity: 1; }
+
+.door-wrap {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.door-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  left: 0;
+  top: 0;
+
+  transition: opacity 520ms cubic-bezier(.2,.9,.2,1), transform 520ms cubic-bezier(.2,.9,.2,1);
+  will-change: opacity, transform;
+}
+
+.door-img.inactive { opacity: 0; transform: scale(1.02); pointer-events: none; }
+
+.door-img.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+.enter-btn {
+  position: absolute;
+  bottom: 8vh;
+  background: rgba(250, 245, 240, 0.92); /* off-white nude */
+  color: #3b2f2a; /* soft brown */
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(60,48,43,0.06);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 180ms ease;
+  box-shadow: 0 6px 20px rgba(50,40,35,0.08);
+}
+.enter-btn:hover { transform: translateY(-3px); }
+.enter-btn.hidden { opacity: 0; transform: translateY(6px); pointer-events: none; }
+
+.skip-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255,255,255,0.7);
+  border: none;
+  padding: 0.45rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+/* subtle overlay placed directly on top of the door images to hide background details */
+.door-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 246, 243, 0.36); /* very light nude */
+  -webkit-backdrop-filter: blur(6px) saturate(1.02);
+  backdrop-filter: blur(6px) saturate(1.02);
+  pointer-events: none;
+  z-index: 3; /* above images (which are default) but below buttons */
+  transition: opacity 420ms ease;
+}
+
+.door-wrap > button { z-index: 4; }
+
+.white-flash {
+  position: absolute;
+  inset: 0;
+  /* big centered bloom that expands and blurs for a dramatic "light at the end" */
+  background: radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(255,255,255,0.98) 25%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0.9) 100%);
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+.white-flash.show {
+  opacity: 1;
+  animation: flash-large 620ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes flash-large {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(0px);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.06);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.7);
+    filter: blur(18px);
+  }
+}
+
+@media (max-width: 640px) {
+  .enter-btn { bottom: 6vh; padding: 0.5rem 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door-img, .white-flash, .bg-panel { transition: none !important; animation: none !important; }
+}
+*** End Patch

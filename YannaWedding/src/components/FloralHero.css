@@ -1,0 +1,219 @@
+.floral-hero {
+  position: relative;
+  width: 100%;
+  min-height: calc(var(--vh, 1vh) * 100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fbf6f4 0%, #f7efe9 100%);
+  color: #4a352e;
+}
+
+.floral-layer {
+  position: absolute;
+  inset: -10% -5% -10% -5%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.25;
+  transform-origin: center;
+}
+
+/* subtle neutral textured shapes (we'll use gradients so there are no extra assets) */
+.floral-layer.layer--slow {
+  background-image: radial-gradient(circle at 10% 20%, rgba(244, 230, 226, 0.9), transparent 25%), radial-gradient(circle at 85% 80%, rgba(241, 233, 229, 0.9), transparent 20%);
+  animation: float-slow 18s linear infinite;
+  transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+.floral-layer.layer--medium {
+  background-image: radial-gradient(circle at 20% 80%, rgba(249, 243, 241, 0.95), transparent 20%), radial-gradient(circle at 75% 15%, rgba(247, 238, 235, 0.95), transparent 18%);
+  opacity: 0.36;
+  animation: float-medium 12s linear infinite;
+  transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 12px), 0);
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+.floral-layer.layer--fast {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 250, 248, 0.95), transparent 15%);
+  opacity: 0.42;
+  animation: float-fast 9s linear infinite;
+  transform: translate3d(calc(var(--mx, 0) * 20px), calc(var(--my, 0) * 20px), 0);
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* separated floral elements for better responsive control */
+.floral-bg {
+  position: absolute;
+  inset: 0;
+  /* background-image: url('../assets/background.png'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.85;
+  z-index: 1;
+  transform: translate3d(calc(var(--mx, 0) * 8px), calc(var(--my, 0) * 8px), 0);
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+
+.floral-corner {
+  position: absolute;
+  background-repeat: no-repeat;
+  opacity: 0.95;
+  z-index: 2;
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+
+.floral-top-left {
+  top: 0;
+  left: 0;
+  width: 60vw;
+  height: 60vh;
+  background-image: url('../assets/top left flower.png');
+  background-size: contain;
+  background-position: top left;
+  transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 12px), 0);
+}
+
+.floral-bottom-right {
+  bottom: 0;
+  right: 0;
+  width: 60vw;
+  height: 60vh;
+  background-image: url('../assets/bottom right flower.png');
+  background-size: contain;
+  background-position: bottom right;
+  transform: translate3d(calc(var(--mx, 0) * 10px), calc(var(--my, 0) * 10px), 0);
+}
+
+@keyframes float-slow {
+  0% { transform: translate3d(-4%, -2%, 0) scale(1); }
+  50% { transform: translate3d(4%, 2%, 0) scale(1.02); }
+  100% { transform: translate3d(-4%, -2%, 0) scale(1); }
+}
+@keyframes float-medium {
+  0% { transform: translate3d(3%, 0, 0) scale(1); }
+  50% { transform: translate3d(-3%, 1.5%, 0) scale(1.01); }
+  100% { transform: translate3d(3%, 0, 0) scale(1); }
+}
+@keyframes float-fast {
+  0% { transform: translate3d(0, 2%, 0) scale(1); }
+  50% { transform: translate3d(0, -2%, 0) scale(1.01); }
+  100% { transform: translate3d(0, 2%, 0) scale(1); }
+}
+
+.floral-content {
+  position: relative;
+  z-index: 120; /* ensure content sits above all decorative layers */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  opacity: 1; /* explicit solid */
+  mix-blend-mode: normal; /* avoid blending with background layers */
+}
+
+/* particle layer */
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: var(--p-size, 10px);
+  height: var(--p-size, 10px);
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.7) 40%, rgba(245,235,230,0.2));
+  border-radius: 50%;
+  opacity: var(--p-opacity, 0.12);
+  transform: translate3d(0,0,0);
+  animation: particle-float var(--p-duration, 10s) linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes particle-float {
+  0% { transform: translate3d(var(--p-x, 0), 0, 0) translateY(0); opacity: 0; }
+  20% { opacity: var(--p-opacity, 0.12); }
+  60% { transform: translate3d(calc(var(--p-x, 0) * 0.6), -18vh, 0); }
+  100% { transform: translate3d(calc(var(--p-x, 0) * 1.0), -36vh, 0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle { animation: none !important; }
+}
+
+.monogram {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: 'Georgia', serif;
+}
+
+.initial {
+  font-size: 7.5rem;
+  line-height: 0.9;
+  color: #553a36; /* stronger dusty rose / neutral for legibility */
+  font-weight: 700;
+  -webkit-text-fill-color: #553a36; /* ensure solid fill on webkit */
+}
+
+.amp {
+  font-size: 2.4rem;
+  color: #b68a85;
+  margin-top: 0.6rem;
+}
+
+.wedding-date {
+  color: #6b4a46; /* darker neutral for contrast */
+  letter-spacing: 0.12em;
+  font-size: 1.05rem;
+}
+
+.invitation-btn {
+  background: #f7efe9; /* fully opaque light background for legibility */
+  color: #5a3f3a; /* solid text color */
+  border: 1px solid rgba(90,63,58,0.12);
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 30px rgba(70,50,45,0.06);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ensure child text elements are not translucent due to parent layering */
+.floral-content, .floral-content * {
+  opacity: 1 !important;
+  color: inherit !important;
+  mix-blend-mode: normal !important;
+}
+
+/* When the page is at the top (hero fully visible) make the hero text use a warm brown */
+.home.hero-top .floral-content .initial,
+.home.hero-top .floral-content .amp,
+.home.hero-top .floral-content .wedding-date {
+  color: #553a36 !important; /* warm brown */
+}
+
+@media (max-width: 768px) {
+  .initial { font-size: 3.6rem; }
+  .amp { font-size: 1.4rem; }
+  .floral-layer.layer--fast,
+  .floral-layer.layer--medium { opacity: 0.18; }
+  .floral-bg { opacity: 0.75; }
+  .floral-top-left { width: 65vw; height: 55vh; }
+  .floral-bottom-right { width: 65vw; height: 55vh; }
+}
+
+@media (max-width: 480px) {
+  .floral-hero { min-height: 60vh; }
+  .initial { font-size: 2.6rem; }
+  .invitation-btn { padding: 10px 18px; font-size: 0.95rem; }
+  .floral-bg { opacity: 0.7; }
+  .floral-top-left { width: 70vw; height: 50vh; }
+  .floral-bottom-right { width: 70vw; height: 50vh; }
+  .side-icon-nav { display: none; }
+}

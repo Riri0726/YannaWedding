@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css';
+// import LandingDoor from '../components/LandingDoor'; // temporarily disabled
+import FloralHero from '../components/FloralHero';
+import SideIconNav from '../components/SideIconNav';
 import RSVPList from '../components/RSVPList';
 import RSVPModal from '../components/RSVPModal';
 import { RSVPProvider } from '../context/RSVPContext';
@@ -8,11 +11,14 @@ const Home = () => {
   // Navigation scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      const nav = document.querySelector('.nav-menu');
+      // const nav = document.querySelector('.nav-menu');
+      const homeEl = document.querySelector('.home');
       if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
+        // if (nav) nav.classList.add('scrolled');
+        if (homeEl) homeEl.classList.remove('hero-top');
       } else {
-        nav.classList.remove('scrolled');
+        // if (nav) nav.classList.remove('scrolled');
+        if (homeEl) homeEl.classList.add('hero-top');
       }
     };
 
@@ -30,7 +36,7 @@ const Home = () => {
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const weddingDate = new Date('2025-08-31T14:00:00');
+      const weddingDate = new Date('2025-10-11T14:00:00');
       const now = new Date();
       const difference = weddingDate - now;
 
@@ -52,7 +58,8 @@ const Home = () => {
 
   return (
     <div className="home">
-      {/* Navigation */}
+  {/* <LandingDoor /> */} {/* Landing door temporarily commented out */}
+      {/* Navigation removed — using side icon nav instead
       <nav className="nav-menu">
         <ul>
           <li><a href="#home">Home</a></li>
@@ -64,34 +71,34 @@ const Home = () => {
           <li><a href="#faq">FAQ</a></li>
         </ul>
       </nav>
+      */}
 
-      {/* Hero Section */}
-      <section className="hero" id="home">
-        <div className="section-container">
-          <div className="date">08.31.2025</div>
-          <button className="invitation-btn">Click to See our Invitation</button>
-        </div>
-      </section>
+  {/* Hero Section */}
+  <FloralHero />
 
       {/* Couple Section */}
       <section className="couple" id="couple">
-          <h2>BY THE GRACE OF GOD AND WITH THE BLESSINGS OF OUR PARENTS,</h2>
+          {/* Corner flowers for couple section */}
+          <div className="couple-floral-top-left"></div>
+          <div className="couple-floral-bottom-right"></div>
+          
+          <h3>Join us for</h3>
+          <h4>the wedding of</h4>
           <div className="couple-names">
-            <h1>WE</h1>
             <h1>Third</h1>
-            <h2>AND</h2>
+            <h2>and</h2>
             <h1>Aleanna</h1>
           </div>
-        <p className="invitation-text">
-          REQUEST THE HONOR OF YOUR PRESENCE TO CELEBRATE LOVE AS WE BEGIN THE FIRST DAY OF OUR LIVES TOGETHER
-        </p>
         <div className="wedding-details">
-          <h2>08.31.2025</h2>
-          <p>SUNDAY | 02:00 PM</p>
-          <p>ST. JOSEPH PARISH CHURCH</p>
-          <p>Manila, Philippines</p>
-          <p>RADISSON HOTEL</p>
-          <p>Manila, Philippines</p>
+          <div className="date-section">
+            <span className="month">OCTOBER</span>
+            <span className="day">11</span>
+            <span className="time">2:00 PM</span>
+          </div>
+          <div className="venue-section">
+            <p>SAN JUAN DELA CRUZ PARISH</p>
+            <p>Ugong, Valenzuela City</p>
+          </div>
         </div>
       </section>
 
@@ -117,7 +124,7 @@ const Home = () => {
       {/* Countdown Section */}
       <section className="countdown" id="countdown">
         <h2>SAVE THE Date</h2>
-        <p>08.31.2025 | 02:00 PM</p>
+        <p>OCTOBER 11, 2025 | 2:00 PM</p>
         <div className="countdown-timer">
           <div className="time-block">
             <span>{timeLeft.days}</span>
@@ -157,9 +164,9 @@ const Home = () => {
         
         <div className="ceremony">
           <h3>The Ceremony</h3>
-          <h4>ST. JOSEPH PARISH CHURCH</h4>
-          <p>Manila, Philippines</p>
-          <p>02:00 PM – 03:00 pm</p>
+          <h4>SAN JUAN DELA CRUZ PARISH</h4>
+          <p>Ugong, Valenzuela City</p>
+          <p>2:00 PM – 3:00 PM</p>
         </div>
 
         <div className="reception">
@@ -188,6 +195,7 @@ const Home = () => {
           </RSVPProvider>
         </div>
       </section>
+  <SideIconNav />
     </div>
   );
 };
