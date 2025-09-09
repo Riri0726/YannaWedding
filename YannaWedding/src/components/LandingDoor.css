@@ -12,11 +12,11 @@
 .bg-panel {
   position: absolute;
   inset: 0;
-  background: rgba(245, 240, 235, 0.6); /* nude/neutral warm tint */
+  background: rgba(245, 240, 235, 0.3); /* Reduced opacity for better performance */
   -webkit-backdrop-filter: blur(6px) saturate(1.05);
   backdrop-filter: blur(6px) saturate(1.05);
   opacity: 0;
-  transition: opacity 520ms ease;
+  transition: opacity 300ms ease; /* Faster transition */
   pointer-events: none;
 }
 
@@ -26,6 +26,7 @@
   position: relative;
   width: 100%;
   height: 100vh;
+  height: 100dvh; /* Use dynamic viewport height for mobile */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,14 +40,17 @@
   object-fit: cover;
   left: 0;
   top: 0;
-
-  transition: opacity 520ms cubic-bezier(.2,.9,.2,1), transform 520ms cubic-bezier(.2,.9,.2,1);
-  will-change: opacity, transform;
 }
 
-.door-img.inactive { opacity: 0; transform: scale(1.02); pointer-events: none; }
+.door-img.inactive { 
+  display: none;
+  pointer-events: none; 
+}
 
-.door-img.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+.door-img.active { 
+  display: block;
+  pointer-events: auto; 
+}
 
 .enter-btn {
   position: absolute;
@@ -81,12 +85,9 @@
 .door-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(250, 246, 243, 0.36); /* very light nude */
-  -webkit-backdrop-filter: blur(6px) saturate(1.02);
-  backdrop-filter: blur(6px) saturate(1.02);
+  background: rgba(250, 246, 243, 0.1); /* Much lighter overlay */
   pointer-events: none;
   z-index: 3; /* above images (which are default) but below buttons */
-  transition: opacity 420ms ease;
 }
 
 .door-wrap > button { z-index: 4; }
@@ -131,4 +132,3 @@
 @media (prefers-reduced-motion: reduce) {
   .door-img, .white-flash, .bg-panel { transition: none !important; animation: none !important; }
 }
-*** End Patch

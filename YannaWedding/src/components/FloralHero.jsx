@@ -1,6 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import './FloralHero.css';
 
+// Import the logo
+import logo from '../assets/Logo.png';
+
 const FloralHero = () => {
   const rootRef = useRef(null);
   const vantaRef = useRef(null);
@@ -90,12 +93,20 @@ const FloralHero = () => {
   const particleRef = useRef(null);
 
   useEffect(() => {
-    // set CSS --vh for mobile browser address bar handling
+    // set CSS --vh for mobile browser address bar handling (fallback)
     const setVh = () => {
-      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      
+      // Also set a minimum height directly for mobile safety
+      const heroElement = rootRef.current;
+      if (heroElement && window.innerWidth <= 480) {
+        heroElement.style.minHeight = `${window.innerHeight}px`;
+      }
     };
     setVh();
     window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
 
     const container = particleRef.current;
     if (!container) return;
@@ -105,7 +116,7 @@ const FloralHero = () => {
   // don't overload small screens
   if (window.innerWidth < 480) return;
 
-  const max = Math.min(18, Math.floor(window.innerWidth / 120));
+  const max = Math.min(30, Math.floor(window.innerWidth / 80)); // Increased from 18 to 30 max, and 120 to 80 divisor
     const nodes = [];
 
     for (let i = 0; i < max; i++) {
@@ -114,7 +125,7 @@ const FloralHero = () => {
       const size = Math.round(6 + Math.random() * 18); // px
       const dur = (8 + Math.random() * 12).toFixed(2) + 's';
       const delay = (Math.random() * 6).toFixed(2) + 's';
-      const opacity = (0.08 + Math.random() * 0.22).toFixed(2);
+      const opacity = (0.4 + Math.random() * 0.4).toFixed(2); // Increased from 0.25-0.6 to 0.4-0.8
       const xOff = Math.round(-30 + Math.random() * 60) + 'px';
 
       d.style.left = Math.round(Math.random() * 100) + '%';
@@ -132,7 +143,8 @@ const FloralHero = () => {
 
     return () => {
       nodes.forEach(n => n.remove());
-  window.removeEventListener('resize', setVh);
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
     };
   }, []);
 
@@ -146,10 +158,8 @@ const FloralHero = () => {
       <div className="floral-corner floral-top-left" aria-hidden="true"></div>
       <div className="floral-corner floral-bottom-right" aria-hidden="true"></div>
       <div className="particle-layer" ref={particleRef} aria-hidden="true"></div>      <div className="floral-content">
-        <div className="monogram" aria-hidden="false">
-          <span className="initial initial--left">A</span>
-          <span className="amp">&</span>
-          <span className="initial initial--right">T</span>
+        <div className="logo-container">
+          <img src={logo} alt="Wedding Logo" className="wedding-logo" />
         </div>
 
         <div className="wedding-date">08.31.2025</div>

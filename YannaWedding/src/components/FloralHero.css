@@ -1,7 +1,8 @@
 .floral-hero {
   position: relative;
   width: 100%;
-  min-height: calc(var(--vh, 1vh) * 100);
+  min-height: 100vh;
+  min-height: 100dvh; /* Use dynamic viewport height for mobile */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,9 +128,9 @@
   position: absolute;
   width: var(--p-size, 10px);
   height: var(--p-size, 10px);
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.7) 40%, rgba(245,235,230,0.2));
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.98), rgba(255,255,255,0.85) 40%, rgba(245,235,230,0.5));
   border-radius: 50%;
-  opacity: var(--p-opacity, 0.12);
+  opacity: var(--p-opacity, 0.5); /* Increased default opacity from 0.3 to 0.5 */
   transform: translate3d(0,0,0);
   animation: particle-float var(--p-duration, 10s) linear infinite;
   will-change: transform, opacity;
@@ -137,7 +138,7 @@
 
 @keyframes particle-float {
   0% { transform: translate3d(var(--p-x, 0), 0, 0) translateY(0); opacity: 0; }
-  20% { opacity: var(--p-opacity, 0.12); }
+  20% { opacity: var(--p-opacity, 0.5); } /* Increased from 0.3 to 0.5 */
   60% { transform: translate3d(calc(var(--p-x, 0) * 0.6), -18vh, 0); }
   100% { transform: translate3d(calc(var(--p-x, 0) * 1.0), -36vh, 0); opacity: 0; }
 }
@@ -146,25 +147,20 @@
   .particle { animation: none !important; }
 }
 
-.monogram {
+.logo-container {
   display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  font-family: 'Georgia', serif;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
-.initial {
-  font-size: 7.5rem;
-  line-height: 0.9;
-  color: #553a36; /* stronger dusty rose / neutral for legibility */
-  font-weight: 700;
-  -webkit-text-fill-color: #553a36; /* ensure solid fill on webkit */
-}
-
-.amp {
-  font-size: 2.4rem;
-  color: #b68a85;
-  margin-top: 0.6rem;
+.wedding-logo {
+  max-width: 400px;
+  max-height: 350px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
 }
 
 .wedding-date {
@@ -192,15 +188,19 @@
 }
 
 /* When the page is at the top (hero fully visible) make the hero text use a warm brown */
-.home.hero-top .floral-content .initial,
-.home.hero-top .floral-content .amp,
 .home.hero-top .floral-content .wedding-date {
   color: #553a36 !important; /* warm brown */
 }
 
 @media (max-width: 768px) {
-  .initial { font-size: 3.6rem; }
-  .amp { font-size: 1.4rem; }
+  .floral-hero {
+    min-height: 100vh;
+    min-height: calc(100vh - 100px); /* Account for mobile browser UI */
+  }
+  .wedding-logo { 
+    max-width: 280px; 
+    max-height: 240px; 
+  }
   .floral-layer.layer--fast,
   .floral-layer.layer--medium { opacity: 0.18; }
   .floral-bg { opacity: 0.75; }
@@ -209,8 +209,15 @@
 }
 
 @media (max-width: 480px) {
-  .floral-hero { min-height: 60vh; }
-  .initial { font-size: 2.6rem; }
+  .floral-hero { 
+    min-height: 100vh;
+    min-height: calc(100vh - 80px); /* Better mobile viewport handling */
+    padding: 20px 10px;
+  }
+  .wedding-logo { 
+    max-width: 240px; 
+    max-height: 200px; 
+  }
   .invitation-btn { padding: 10px 18px; font-size: 0.95rem; }
   .floral-bg { opacity: 0.7; }
   .floral-top-left { width: 70vw; height: 50vh; }

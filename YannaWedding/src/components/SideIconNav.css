@@ -1,6 +1,6 @@
 .side-icon-nav {
   position: fixed;
-  right: 18px;
+  right: 0; /* Stuck to the very right edge */
   bottom: 18px;
   z-index: 9998;
   -webkit-backdrop-filter: blur(6px);
@@ -9,42 +9,55 @@
 
 .side-icon-nav ul {
   margin: 0;
-  padding: 6px;
+  padding: 4px; /* Made smaller */
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced gap */
   align-items: center;
   list-style: none;
-  background: rgba(187,142,133,0.94); /* nude-ish panel */
-  border-radius: 20px 6px 6px 20px; /* rounded left and soft right */
-  box-shadow: 0 8px 30px rgba(20,10,10,0.08);
+  background: #553a36; /* New dark brown color */
+  border-radius: 16px 4px 4px 16px; /* Smaller rounded corners */
+  box-shadow: 0 6px 25px rgba(20,10,10,0.12);
 }
 
 .side-icon-nav a {
   display: block;
-  width: 38px;
-  height: 38px;
+  width: 32px; /* Made smaller */
+  height: 32px; /* Made smaller */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #1f1110; /* dark icon color */
+  color: white; /* White icons */
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 6px; /* Smaller border radius */
   transition: background 0.18s ease, transform 0.12s ease;
 }
 
 .side-icon-nav a:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.15); /* Slightly more visible hover */
   transform: translateY(-2px);
 }
 
 .side-icon-nav svg {
-  width: 18px;
-  height: 18px;
+  width: 16px; /* Made smaller */
+  height: 16px; /* Made smaller */
 }
 
 @media (max-width: 768px) {
-  .side-icon-nav { right: 10px; bottom: 10px; }
-  .side-icon-nav ul { padding: 4px; }
-  .side-icon-nav a { width: 34px; height: 34px; }
+  .side-icon-nav { 
+    right: 0; /* Stuck to the very right on mobile too */
+    bottom: 10px; 
+  }
+  .side-icon-nav ul { 
+    padding: 3px; /* Even smaller on mobile */
+    gap: 4px; /* Reduced gap on mobile */
+  }
+  .side-icon-nav a { 
+    width: 28px; /* Smaller on mobile */
+    height: 28px; /* Smaller on mobile */
+  }
+  .side-icon-nav svg {
+    width: 14px; /* Smaller icons on mobile */
+    height: 14px;
+  }
 }

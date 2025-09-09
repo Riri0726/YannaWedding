@@ -1,32 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './LandingDoor.css';
 
-// Import entrance sequence images from assets (added extras)
-import entranceImg from '../assets/entrance.png';
-import entrance1Img from '../assets/entrance 1.png';
-import entrance2Img from '../assets/entrance 2.png';
-import entrance3Img from '../assets/entrance 3.png';
-
-const IMAGE_SEQUENCE = [
-  entranceImg,
-  entrance1Img,
-  entrance2Img,
-  entrance3Img
-];
+// Import entrance jpg and video
+import entranceJpg from '../assets/entrance.jpg';
+import entranceVideo from '../assets/entrance.mp4';
 
 const LandingDoor = ({ onFinish } = {}) => {
   const [visible, setVisible] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [stage, setStage] = useState('idle'); // idle | animating | white | done
+  const [stage, setStage] = useState('idle'); // idle | playing | white | done
+  const videoRef = useRef(null);
   const timeouts = useRef([]);
 
   useEffect(() => {
+    // Prevent body scroll when landing door is visible
+    if (visible) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+
     return () => {
       // clear any pending timeouts on unmount
       timeouts.current.forEach((t) => clearTimeout(t));
       timeouts.current = [];
+      
+      // Restore scroll when component unmounts
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
-  }, []);
+  }, [visible]);
 
   const sleep = (ms) => new Promise((res) => {
     const t = setTimeout(res, ms);
@@ -35,34 +42,37 @@ const LandingDoor = ({ onFinish } = {}) => {
 
   const handleEnter = async () => {
     if (stage !== 'idle') return;
-    setStage('animating');
+    setStage('playing');
 
-  // Smooth multi-step transition that follows the numeric ordering of images.
-  // Increase per-step time slightly for a smoother feel.
-  const stepMs = 500; // per-image crossfade time
-
-  // brief micro-delay to give immediate tactile feedback before progression
-  await sleep(80);
-
-    for (let i = 1; i < IMAGE_SEQUENCE.length; i++) {
-      // crossfade to next image
-      setCurrentIndex(i);
-      // wait slightly longer than CSS transition so it feels smooth
-      // add tiny overlap to avoid hard cuts
-      // keep short so whole animation stays snappy
-      // accumulate timeout handles via sleep helper
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(stepMs);
+    // Play the entrance video
+    const videoElement = document.querySelector('.entrance-video');
+    if (videoElement) {
+      try {
+        // Add better mobile support
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        await videoElement.play();
+        
+        // Wait for video to finish with timeout fallback for mobile
+        await Promise.race([
+          new Promise((resolve) => {
+            videoElement.onended = resolve;
+          }),
+          // Fallback timeout in case video doesn't trigger onended on mobile
+          sleep(3000) // 3 seconds for 2.5 sec video + small buffer
+        ]);
+      } catch (error) {
+        console.log('Video play failed, continuing anyway:', error);
+        // If video fails, just wait a moment before continuing
+        await sleep(2000);
+      }
+    } else {
+      // If no video element found, still continue
+      await sleep(2000);
     }
 
-  // show a short white flash before revealing page
-  setStage('white');
-  // allow the bloom animation (~620ms) to complete visually
-  await sleep(700);
-
-  setStage('done');
-  // short delay to allow any exit transitions
-  await sleep(120);
+    setStage('done');
+    await sleep(100);
     setVisible(false);
     if (typeof onFinish === 'function') onFinish();
   };
@@ -78,30 +88,49 @@ const LandingDoor = ({ onFinish } = {}) => {
   if (!visible) return null;
 
   return (
-    <div className={`landing-door-overlay ${stage === 'white' ? 'white-stage' : ''}`} role="dialog" aria-label="Entrance overlay">
-      {/* background panel to hide page content gently with nude/neutral tint and blur */}
-      <div className={`bg-panel ${stage !== 'done' ? 'show' : ''}`} aria-hidden="true"></div>
-
+    <div className={`landing-door-overlay`} role="dialog" aria-label="Entrance overlay">
       <div className="door-wrap" onKeyDown={(e) => { if (e.key === 'Enter') handleEnter(); }}>
-        {IMAGE_SEQUENCE.map((src, idx) => (
-          <img
-            key={src}
-            src={src}
-            alt={idx === 0 ? 'Closed chapel door' : `Door stage ${idx}`}
-            className={`door-img ${currentIndex === idx ? 'active' : 'inactive'}`}
-            draggable={false}
-          />
-        ))}
+        {/* JPG placeholder when idle */}
+        <img
+          className="door-preview"
+          src={entranceJpg}
+          alt="Chapel door entrance"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: stage === 'idle' ? 'block' : 'none'
+          }}
+        />
+        
+        {/* Video only when playing */}
+        <video
+          className="entrance-video"
+          src={entranceVideo}
+          muted
+          playsInline
+          preload="metadata"
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: stage === 'playing' ? 'block' : 'none'
+          }}
+        />
 
-        {/* subtle overlay sitting on top of the door images to blur/tint background behind the door */}
-        <div className="door-overlay" aria-hidden="true"></div>
-
-        <button className={`enter-btn ${stage !== 'idle' ? 'hidden' : ''}`} onClick={handleEnter} aria-label="Enter site">Enter</button>
+        <button 
+          className={`enter-btn ${stage !== 'idle' ? 'hidden' : ''}`} 
+          onClick={handleEnter} 
+          disabled={stage !== 'idle'}
+          aria-label="Enter site"
+        >
+          {stage === 'playing' ? 'Loading...' : 'Enter'}
+        </button>
 
         <button className="skip-btn" onClick={handleSkip} aria-label="Skip animation">Skip</button>
       </div>
-
-      <div className={`white-flash ${stage === 'white' || stage === 'done' ? 'show' : ''}`} aria-hidden="true"></div>
     </div>
   );
 };
