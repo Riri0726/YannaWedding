@@ -238,7 +238,7 @@ const RSVPList = () => {
               {/* INDIVIDUAL GUESTS SECTION */}
               {filteredData.individual.length > 0 && (
                 <div className="guest-section">
-                  <h3 className="section-title">Individual Guests</h3>
+                  <h3 className="section-title">Individual Guest</h3>
                   <div className="uniform-guest-grid">
                     {filteredData.individual.map((guest) => {
                       const isLocked = guest.is_coming !== null;
@@ -271,7 +271,7 @@ const RSVPList = () => {
               {/* FAMILY GROUPS SECTION */}
               {filteredData.family.length > 0 && (
                 <div className="guest-section">
-                  <h3 className="section-title">Family Groups</h3>
+                  <h3 className="section-title">Families</h3>
                   <div className="uniform-guest-grid">
                     {filteredData.family.map((group) => {
                       const groupGuests = guestsByGroup[group.id] || [];
@@ -317,7 +317,7 @@ const RSVPList = () => {
               {/* FRIENDS GROUPS SECTION */}
               {filteredData.friends.length > 0 && (
                 <div className="guest-section">
-                  <h3 className="section-title">Friends Groups</h3>
+                  <h3 className="section-title">Friends and Colleagues</h3>
                   <div className="uniform-guest-grid">
                     {filteredData.friends.map((group) => {
                       const groupGuests = guestsByGroup[group.id] || [];

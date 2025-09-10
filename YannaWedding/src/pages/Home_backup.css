@@ -321,612 +321,417 @@
     letter-spacing: 1px;
   }
 
-  /* Timeline Container */
+  /* Interactive Vertical Timeline Section */
   .timeline {
-    position: relative;
-    padding: 4rem 2rem;
+    padding: 120px 20px;
     background-image: url('../assets/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    position: relative;
     overflow: hidden;
     min-height: 100vh;
     min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
   }
 
-  /* TIMELINE CONTAINER */
   .timeline-container {
-  position: relative;
-  max-width: 1600px; /* increased so images can be larger on wide screens */
-  margin: 4rem auto;
-  padding: 0 2rem;
-    font-family: 'Alice', serif;
-    color: #6b4f2f;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px;
   }
 
   .timeline-title {
+    font-family: 'Georgia', serif;
+    color: #6b4f2f;  /* Match date color */
     text-align: center;
-    font-family: 'Pinyon Script', cursive;
-    font-size: 4rem;
-    color: #6b4f2f;
-    margin-bottom: 60px;
-    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+    margin-bottom: 80px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
     font-weight: 400;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.8);  /* Light shadow for readability */
   }
 
   .timeline-wrapper {
     position: relative;
-    width: 100%;
+    padding: 80px 0;  /* Increased padding for more space */
     margin: 0 auto;
-    padding: 3rem 0;
+    max-width: 1200px;  /* Add max-width for better layout control */
   }
 
-  /* Vertical line in the middle */
-  .timeline-line {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-  width: 4px;
-    background-color: #7b4a28;
-    --scroll-progress: 0; /* JS will update this (0..1) */
-    transform: translateX(-50%);
-    z-index: 0; /* put base line behind badges/photos */
-  }
-
-  /* White fill that grows/shrinks based on --scroll-progress */
-  .timeline-line::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
-  width: 4px;
-    height: calc(var(--scroll-progress) * 100%);
-    background: #ffffff;
-    transition: height 220ms linear;
-    z-index: 1; /* sits above the brown line so it's visible */
-  }
-
-  /* Container holds all events in a column */
-  .timeline-event-container {
+  /* Timeline Events Container - Flex with space-between */
+  .timeline-events-container {
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    justify-content: space-between;
+    align-items: center;
+    gap: 100px;  /* Space between each event */
     width: 100%;
+    position: relative;
   }
 
-  /* Each event stretches across wrapper */
+  /* Animated vertical line with scroll-based fill */
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: #6b4f2f;  /* Match date color */
+    transform: translateX(-50%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(107, 79, 47, 0.3);  /* Match color shadow */
+    overflow: hidden;
+    z-index: 1;  /* Lower z-index so markers appear above */
+  }
+
+  .timeline-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(var(--scroll-progress, 0) * 100%);
+    background: linear-gradient(to bottom, 
+      #6b4f2f 0%,   /* Match your date color */
+      #8b6f47 50%,  /* Slightly lighter shade */
+      #6b4f2f 100%  /* Back to original color */
+    );
+    transition: height 0.1s ease-out;
+  }
+
+  /* Timeline events */
   .timeline-event {
     position: relative;
-    display: flex;
-  justify-content: space-between;
+    margin: 120px 0;  /* Increased spacing between events */
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease-out;
+    z-index: 10;  /* Higher z-index for events */
+  }
+
+  .timeline-event.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .year-marker {
+    display: inline-block;
+    background: linear-gradient(135deg, #6b4f2f, #8b6f47);  /* Match date color gradient */
+    color: white;
+    padding: 15px 22px;  /* Increased padding for better visibility */
+    border-radius: 25px;
+    font-family: 'Georgia', serif;
+    font-weight: bold;
+    font-size: 1.2rem;  /* Slightly larger font */
+    box-shadow: 0 6px 20px rgba(107, 79, 47, 0.5);  /* Match color shadow */
+    border: 4px solid white;  /* Thicker border */
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 101;  /* Highest z-index */
+    position: relative;
+  }
+
+  .timeline-event.visible .year-marker {
+    animation: markerHighlight 1s ease-out 0.5s forwards;
+  }
+
+  @keyframes markerHighlight {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+    }
+    50% { 
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.6);
+  }
+}
+
+/* TIMELINE EVENTS */
+.timeline-event {
+  display: flex;
+  justify-content: center;   /* keep items centered, not pushed apart */
   align-items: center;
-  width: 100%;
-  z-index: 2;
-  padding: 0 4rem;
-  gap: 4rem; /* default space between photo and text; will be increased on larger breakpoints */
+  gap: 8rem;                 /* Increased gap from 6rem to 8rem for more space */
+  margin: 4rem 0;            /* Increased vertical spacing between events */
+  z-index: 10;               /* Ensure events are above the line */
+  position: relative;
+}
+
+.timeline-content,
+.timeline-image {
+  flex: 1;
+  max-width: 60%;            /* Increased from 45% to 60% for bigger width */
+}
+
+/* TIMELINE CONTENT */
+.timeline-content {
+            /* reduce inner padding */
+  background: transparent;   /* Remove white background */
+}
+
+.timeline-content h3 {
+  font-size: 2.5rem;  /* Increased from 1.5rem */
+  margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+  font-size: 1.8rem;  /* Increased from 1rem */
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* IMAGE STYLING */
+.timeline-image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;        /* optional rounded corners */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* MARKERS (YEAR BADGES) - Remove circular background */
+.timeline-marker {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0;  /* Remove padding */
+  font-weight: bold;
+  color: #333;
+  z-index: 100;  /* Much higher z-index to ensure it's above everything */
+  background: transparent;  /* Remove background */
+  box-shadow: none;  /* Remove shadow */
+}
+
+/* MOBILE VIEW */
+@media (max-width: 768px) {
+  .timeline-event {
+    flex-direction: column;  /* stack vertically */
+    gap: 1rem;               /* smaller gap */
+    margin: 2rem 0;
   }
 
-  /* Alternate sides for every other event */
-  .timeline-event.event-right {
-    flex-direction: row-reverse;
+  .timeline-content,
+  .timeline-image {
+    max-width: 100%;         /* take full width */
   }
 
-  /* Image & text width based on parent */
-  .timeline-photo,
-  .timeline-text {
-    max-width: 100%;
+  .timeline-marker {
+    left: 25px;
+    transform: none;
   }
 
-  /* Make the photo noticeably larger and text slightly narrower */
-  /* Keep photos visually large but constrained so gap is preserved */
+  .timeline-content {
+    text-align: left;
+    padding-left: 3rem;      /* offset so text doesn't overlap line */
+  }
+}
+
+/* Photo styling */
   .timeline-photo {
-    flex: 0 0 46%;
-    max-width: 480px; /* cap image container width */
+    flex: 0 0 min(500px, 35vw);  /* Responsive size that scales with screen */
+    position: relative;
   }
 
-  .timeline-text {
-    flex: 0 0 46%;
-    max-width: 720px;
-  }
-
-  /* Image styling */
   .timeline-photo img {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* force square */
+    width: 100%;  /* Make responsive */
+    max-width: 500px;
+    height: auto;  /* Let height adjust */
     object-fit: cover;
-    border-radius: 12px;
-    border: 6px solid rgba(255,255,255,0.95); /* white frame */
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-    display: block;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    border: 8px solid white;
+    transition: all 0.3s ease;
+    aspect-ratio: 1 / 1;  /* Ensure 1:1 ratio */
   }
 
   .timeline-photo:hover img {
-    transform: scale(1.06);
-    box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
   }
 
-  /* Text styling (improved) */
+  .timeline-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: min(250px, 15vw);  /* Responsive gap that scales with screen size */
+    justify-content: space-between;
+    z-index: 20;  /* Ensure content is above the line */
+    position: relative;
+    padding: 20px;  /* Add padding for better spacing */
+  }
+
+
+  /* Text styling */
   .timeline-text {
-    text-align: left;
-    color: #5a3a1a;
-    font-family: 'Alice', serif; /* easy-to-read serif for body */
-    line-height: 1.6;
-    padding: 0.25rem 0;
+    flex: 1;
+    padding: 20px;
+
+    
   }
 
-  /* Cursive heading for a romantic touch */
-  .timeline-text h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 3rem; /* larger */
-  color: #6b4f2f;
-  font-family: var(--font-primary), 'Corinthia', serif; /* stronger serif */
-  font-weight: 900; /* extra-bold */
-  font-style: normal;
-  letter-spacing: 0.6px;
-  text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
-  }
-
-  /* Body/caption styling */
-  .timeline-text p {
-    margin: 0;
-    font-size: 1.9rem; /* noticeably larger subtext */
-    color: #5a3a1a;
-    font-family: 'Corinthia', cursive; /* matches 'Third' and 'Aleanna' */
+  .timeline-year {
+    font-family: 'Georgia', serif;
+    font-size: 2.2rem;
+    color: #6b4f2f;  /* Match date color */
+    margin-bottom: 10px;
     font-weight: 600;
-    opacity: 0.98;
-    line-height: 1.35;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);  /* Light shadow for readability */
   }
 
-  /* Slightly larger headings on wider screens */
-  @media (min-width: 1200px) {
-    .timeline-text h3 {
-      font-size: 3.4rem;
+  .timeline-caption {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    color: #6b4f2f;  /* Match date color instead of white */
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    text-shadow: 1px 1px 3px rgba(255,255,255,0.8);  /* Light shadow for readability */
+  }
+
+  /* Timeline Mobile Responsive */
+  @media (max-width: 768px) {
+    .timeline {
+      padding: 80px 15px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background-attachment: scroll;  /* Fixed attachment can cause issues on mobile */
     }
-    .timeline-photo img {
-      aspect-ratio: 1 / 1; /* keep square but larger by container */
+    
+    .timeline-title {
+      font-size: 2.5rem;
+      margin-bottom: 60px;
     }
-    /* Center the timeline content on very wide screens and rely on gap instead of asymmetric margins */
-    .timeline-container {
-      max-width: 1200px;
-      margin: 4rem auto;
+    
+    .timeline-wrapper {
+      padding: 60px 0;
     }
+    
+    .timeline-events-container {
+      gap: 60px;  /* Smaller gap on mobile */
+    }
+    
+    .timeline-line {
+      left: 30px;
+      transform: none;
+      z-index: 1;  /* Keep low z-index on mobile */
+    }
+    
     .timeline-event {
-      gap: 5.5rem;
-      padding: 0 2.5rem;
+      margin: 60px 0;  /* Reduced spacing on mobile */
+      padding-left: 70px;
+      z-index: 10;
+    }
+    
+    .event-left .timeline-content,
+    .event-right .timeline-content {
+      flex-direction: column;
+      gap: 20px;  /* Much smaller gap for mobile */
+      max-width: 100%;
       justify-content: center;
-      max-width: 1100px;
+      z-index: 20;
+    }
+    
+    .timeline-marker {
+      left: 30px;
+      transform: translateX(-50%);
+      z-index: 100;  /* High z-index on mobile */
+      background: transparent;  /* Keep transparent on mobile */
+    }
+    
+    .year-marker {
+      padding: 8px 12px;  /* Smaller on mobile */
+      font-size: 0.9rem;
+      z-index: 101;
+    }
+    
+    .timeline-photo {
+      flex: none;
+      width: 100%;
+      max-width: 280px;  /* Much smaller for mobile */
       margin: 0 auto;
     }
-    .timeline-event .timeline-photo { margin: 0; }
-  }
-
-  /* Tablet breakpoint: moderate sizes between desktop and mobile */
-  @media (max-width: 1024px) {
-    .timeline-container {
-      max-width: 1000px;
+    
+    .timeline-photo img {
+      width: 100%;  /* Responsive width */
+      max-width: 280px;
+      height: auto;  /* Let height adjust automatically */
+      aspect-ratio: 1 / 1;
     }
-    .timeline-event {
-      gap: 2.5rem;
-    }
-    .timeline-photo {
-      flex: 0 0 48%;
-      max-width: 420px;
-    }
+    
     .timeline-text {
-      flex: 1 1 48%;
-      max-width: 520px;
+      text-align: center;
+      width: 100%;
+      padding: 0 10px;
     }
-    .timeline-text h3 {
-      font-size: 2.4rem;
+    
+    .event-right .timeline-text {
+      text-align: center;
     }
-    .timeline-text p {
-      font-size: 1.25rem;
+    
+    .timeline-year {
+      font-size: 1.5rem;
     }
-  }
-
-  /* tweak badges and spacing on wide (but not full-desktop) screens */
-  @media (min-width: 1000px) and (max-width: 1199px) {
-    .timeline-event {
-      gap: 3.5rem;
-      padding: 0 4rem;
-    }
-    .timeline-event .timeline-year-badge {
-      padding: 0.45rem 0.95rem;
-      font-size: 1rem;
+    
+    .timeline-caption {
+      font-size: 1.2rem;
     }
   }
 
-  /* Keep mobile readable and avoid overflowing when we increased sizes */
-  @media (max-width: 900px) {
-    .timeline-container {
-      max-width: 100%;
-      padding: 0 18px;
-    }
-    .timeline-event {
-      padding: 0 1.5rem;
-      gap: 1rem;
-    }
-    .timeline-photo {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-    .timeline-text {
-      flex: 0 0 100%;
-      max-width: 100%;
-    }
-    .timeline-text p {
-      font-size: 1.05rem;
-    }
-    .timeline-text h3 {
-      font-size: 1.4rem;
-    }
-  }
-
-  /* Make sure mobile headings remain readable */
-  @media (max-width: 768px) {
-    .timeline-text h3 {
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
-    .timeline-text p {
-      font-size: 1rem;
-    }
-    .timeline-line::before {
-      transition: height 160ms linear;
-    }
-  }
-
-  /* Year badge that sits on the central line for each event */
-  .timeline-event .timeline-year-badge {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #8B4513;
-    color: #6b4f2f;
-    padding: 0.5rem 0.95rem;
-    border-radius: 6px;
-    font-weight: 800;
-    font-family: 'Alice', serif;
-    z-index: 3; /* above line and images */
-    box-shadow: 0 6px 18px rgba(0,0,0,0.14);
-  }
-
-  /* remove manual side margins; gap handles spacing reliably */
-  .timeline-event:not(.event-right) .timeline-photo,
-  .timeline-event.event-right .timeline-photo {
-    margin: 0;
-  }
-
-  /* Responsive: stack on small screens */
-  @media (max-width: 768px) {
-    /* Move the central line into a left column and give stacked events space */
-    .timeline-line {
-      left: 24px; transform: none;
-    }
-    .timeline-event {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-      padding-left: 72px; /* room for the badge/line column */
-      padding-right: 1rem;
-    }
-    .timeline-photo,
-    .timeline-text {
-      flex: none;
-      max-width: 100%;
-    }
-
-    /* Ensure event-right stops reversing on mobile and stacks the same way */
-    .timeline-event.event-right {
-      flex-direction: column;
-    }
-
-    /* Vertically center the year badge next to each event's main content (aligned with the image center) */
-    .timeline-event .timeline-year-badge {
-      left: 24px; /* align center of badge with the vertical line */
-      top: 50%;
-      transform: translate(-50%, -50%); /* center the badge vertically */
-      position: absolute;
-      z-index: 6;
-      padding: 0.36rem 0.8rem;
-      font-size: 0.95rem;
-      border-radius: 6px;
-    }
-
-    .timeline-photo { margin-top: 0.5rem; }
-  }
-
-  /* Very small phones: tighten badge and slightly reduce left padding */
   @media (max-width: 480px) {
-    .timeline-event { padding-left: 4.25rem; }
-    .timeline-event .timeline-year-badge {
-      left: 42px;
-      top: 10px;
-      padding: 0.35rem 0.7rem;
+    .timeline {
+      padding: 60px 10px;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    
+    .timeline-title {
+      font-size: 2rem;
+    }
+    
+    .timeline-wrapper {
+      padding: 40px 0;
+    }
+    
+    .timeline-events-container {
+      gap: 40px;  /* Even smaller gap on small mobile */
+    }
+    
+    .timeline-event {
+      padding-left: 60px;
+      margin: 80px 0;  /* Maintain spacing on small screens */
+    }
+    
+    .timeline-line {
+      left: 25px;
+      z-index: 1;
+    }
+    
+    .timeline-marker {
+      left: 25px;
+      z-index: 100;
+    }
+    
+    .year-marker {
+      padding: 8px 12px;
       font-size: 0.9rem;
+      z-index: 101;
     }
-  }
-
-  /* ENTOURAGE Section (scoped basis provided by user)
-     - Scoped under .entourage to avoid overriding global h2/h3/p
-     - Adds .script-title, two-column helpers, and responsive stacking
-  */
-  .entourage {
-  background-color: #fdf8f4;
-  background-image: url('../assets/background.png');
-  background-size: cover;
-  background-position: center;
-    color: #5a3e36;
-    text-align: center;
-    padding: 2rem 1.25rem;
-    font-family: Georgia, serif;
-  }
-
-  .entourage .script-title {
-    font-family: "Brush Script MT", cursive;
-    font-size: 5rem;
-    color: #553a36;
-    margin-bottom: 1rem;
-  }
-
-  /* decorative ornament above the Entourage title (whistle/downward motif) */
-  .entourage .script-title::before {
-    content: "";
-    display: block;
-    width: 220px;
-    height: 220px; /* enforce 1:1 ratio and larger */
-    margin: 0 auto 0.6rem auto;
-    background-image: url('../assets/whistledown.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: translateY(0);
-    opacity: 0.98;
-  }
-
-  @media (max-width: 600px) {
-    .entourage .script-title::before {
-      width: 120px;
-      height: 120px;
-      margin-bottom: 0.4rem;
+    
+    .timeline-photo img {
+      width: 300px;  /* Increased from 250px to 300px */
+      height: 300px;  /* Maintain 1:1 ratio on small screens */
+      aspect-ratio: 1 / 1;
     }
-  }
-
-  .entourage h2 {
-    font-size: 1rem;
-    letter-spacing: 2px;
-    font-weight: bold;
-    color: #553a36;
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
-    text-transform: uppercase;
-  }
-
-  .entourage h3 {
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    font-style: italic;
-    color: #553a36;
-    margin-bottom: 0.3rem;
-  }
-
-  .entourage p {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-    color: inherit;
-  }
-
-  /* two-column helper (centers content and wraps on small screens) */
-  .entourage .two-col {
-    display: flex;
-    justify-content: center;
-    gap: 5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .entourage .two-col.spaced {
-    margin-top: 2rem;
-  }
-
-  /* Card/container for the Entourage lists */
-  .entourage .entourage-container {
-    position: relative; /* for pseudo-element borders */
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fffaf6;
-    padding: 2.5rem; /* extra room so inner dotted border doesn't overlap content */
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-
-  /* decorative framed border: outer subtle solid and inner dotted inset */
-  .entourage .entourage-container::before,
-  .entourage .entourage-container::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    border-radius: inherit;
-  }
-
-  /* outer solid line (thicker) */
-  .entourage .entourage-container::before {
-    border: 4px solid rgba(107,79,47,0.16);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset;
-  }
-
-  /* inner dotted inset (thicker dots) */
-  .entourage .entourage-container::after {
-    inset: 10px; /* creates space from outer border */
-    border-radius: 8px;
-    border: 2px dotted rgba(107,79,47,0.22);
-    background-clip: padding-box;
-  }
-
-  @media (max-width: 600px) {
-    .entourage .entourage-container { padding: 1.25rem; }
-    .entourage .entourage-container::after { inset: 8px; border-width: 1px; }
-    .entourage .entourage-container::before { border-width: 3px; }
-  }
-
-  /* Keep the existing vertical-left title (if used) but make it optional */
-  .entourage .entourage-vertical {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-family: var(--font-primary);
-    font-size: 1.6rem;
-    letter-spacing: 6px;
-    color: #b07b44;
-    margin: 0 1rem 0 0;
-    padding-right: 0.6rem;
-    border-right: 3px solid rgba(107,79,47,0.08);
-  }
-
-  .entourage .entourage-content {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    width: 100%;
-    align-items: start;
-  }
-
-  .entourage .entourage-column {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    align-items: center;
-  }
- .two-col-inner{
-    display: flex;
-    flex-direction: row;
-    gap: 0.6rem;
-    align-items: center;
- }
-
-  .entourage .entourage-title {
-    font-family: 'Corinthia', cursive;
-    font-size: 1.25rem;
-    color: #b07b44;
-    margin: 0 0 0.6rem 0;
-    font-weight: 700;
-  }
-
-  .entourage .entourage-name {
-    font-family: 'Alice', serif;
-    font-size: 0.98rem;
-    color: #3f2a1b;
-    margin: 0;
-    text-align: center;
-  }
-
-  /* Responsive: stack columns on small screens */
-  @media (max-width: 900px) {
-    .entourage .entourage-container { padding: 1.25rem; }
-    .entourage .entourage-content { grid-template-columns: 1fr; gap: 1rem; }
-    .entourage .entourage-vertical { writing-mode: horizontal-tb; transform: none; border-right: none; border-bottom: 3px solid rgba(107,79,47,0.08); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-    .entourage .two-col { gap: 1rem; }
-    /* stack inner two-column pairs vertically on mobile */
-    .two-col-inner {
-      flex-direction: column;
-      gap: 0.5rem;
-      align-items: center;
+    
+    .timeline-year {
+      font-size: 1.5rem;
     }
-  }
-
-  /* centered flower below entourage panel */
-  .entourage-flower-wrap {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: -20px; /* pull up to tuck more into bottom of panel for large flower */
-    pointer-events: none; /* decorative only */
-  }
-
-  .entourage-flower {
-    width: 420px; /* requested large size on desktop */
-    height: auto;
-    display: block;
-    transform: translateY(25px);
-    filter: drop-shadow(0 22px 56px rgba(0,0,0,0.22));
-
-  }
-
-  /* Medium screens */
-  @media (max-width: 1200px) {
-    .entourage-flower { width: 560px; }
-    .entourage-flower-wrap { margin-top: -100px; }
-  }
-
-  @media (max-width: 900px) {
-    .entourage-flower { width: 420px; }
-    .entourage-flower-wrap { margin-top: -60px; }
-  }
-
-  /* Small phones */
-  @media (max-width: 600px) {
-    .entourage-flower { width: 300px; }
-    .entourage-flower-wrap { margin-top: -20px; }
-  }
-
-  /* Principal Sponsors (two-column centered names with spaced heading) */
-  .principal-sponsors {
-    margin: 2rem auto 3rem auto;
-    max-width: 760px;
-    background: transparent;
-    text-align: center;
-    color: #6b4f2f;
-    padding: 0 1rem;
-  }
-
-  .principal-sponsors .principal-title {
-    font-family: var(--font-primary);
-    font-size: 1.15rem;
-    color: #c0837c;
-    letter-spacing: 8px;
-    text-transform: uppercase;
-    margin-bottom: 0.85rem;
-  }
-
-  .principal-sponsors .names-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem 3rem; /* row-gap, column-gap */
-    justify-items: center;
-    align-items: start;
-  }
-
-  .principal-sponsors .names-grid p {
-    margin: 0;
-    font-family: 'Alice', serif;
-    font-size: 1rem;
-    color: #3f2a1b;
-    line-height: 1.6;
-  }
-
-  /* make title slightly tighter on small screens and stack the names */
-  @media (max-width: 600px) {
-    .principal-sponsors .principal-title {
-      letter-spacing: 4px;
-      font-size: 1rem;
-    }
-    .principal-sponsors .names-grid {
-      grid-template-columns: 1fr;
-      gap: 0.5rem 1rem;
+    
+    .timeline-caption {
+      font-size: 1.3rem;
     }
   }
 
@@ -1139,10 +944,10 @@
         to right,
         #CD853F 0%,
         rgba(205, 133, 63, 0.9) 20%,
+        rgba(205, 133, 63, 0.7) 40%,
         rgba(0, 0, 0, 0) 70%,
         rgba(0, 0, 0, 0) 100%
       );
-      padding: 0 1.5rem;
     }
   }
 
@@ -1394,6 +1199,7 @@
     /* Fix viewport height issues on mobile for all sections */
     .hero,
     .couple,
+    .timeline,
     .countdown,
     .gallery,
     .schedule,
@@ -1471,6 +1277,10 @@
       margin-bottom: 20px;
     }
     
+    .timeline-events::before {
+      display: none;
+    }
+    
     .event {
       margin: 20px 0;
       text-align: center;
@@ -1490,6 +1300,7 @@
     /* Apply mobile viewport fixes to all sections */
     .hero,
     .couple,
+    .timeline,
     .countdown,
     .gallery,
     .schedule,
@@ -2323,6 +2134,7 @@
     /* Additional mobile fixes */
     .hero,
     .couple,
+    .timeline,
     .countdown,
     .gallery,
     .schedule,
@@ -2356,6 +2168,10 @@
       font-size: 2.5rem;
     }
     
+    .timeline-events::before {
+      display: none;
+    }
+    
     .event {
       margin: 20px 0;
       min-width: auto;
@@ -2383,6 +2199,7 @@
 
     .hero,
     .couple,
+    .timeline,
     .countdown,
     .gallery,
     .schedule,

@@ -1,0 +1,299 @@
+  /* Variables */
+  :root {
+    --primary-color: #d4b08c;  /* Romantic gold */
+    --secondary-color: #f9f1e7; /* Soft cream */
+    --accent-color: #8d5b4c;   /* Deep rose */
+    --text-color: #2c1810;     /* Dark brown */
+    --light-text: #f9f1e7;     /* Light cream */
+    --font-primary: 'Playfair Display', serif;
+    --font-secondary: 'Montserrat', sans-serif;
+  }
+
+  /* Global Styles */
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    /* Mobile viewport height fix */
+    height: 100%;
+    height: 100dvh; /* Dynamic viewport height for newer browsers */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+    /* Mobile viewport height fix */
+    min-height: 100%;
+    min-height: 100dvh;
+  }
+
+  .home {
+    width: 100%;
+    color: var(--text-color);
+    font-family: var(--font-secondary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Common section styles */
+  .hero,
+  .couple,
+  .countdown,
+  .gallery,
+  .schedule,
+  .faq {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh; /* Use dynamic viewport height for mobile */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  /* Container styles */
+  .section-container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  /* Hero Section */
+  .hero {
+    width: 100%;
+    text-align: center;
+    padding: 150px 0;
+    background-color: var(--secondary-color);
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    animation: fadeIn 1.5s ease-out;
+  }
+
+  .hero .section-container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to right bottom, transparent 49%, var(--primary-color) 50%);
+  }
+
+  .hero .date {
+    font-size: 3.5rem;
+    margin-bottom: 30px;
+    font-family: var(--font-primary);
+    color: var(--accent-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .invitation-btn {
+    padding: 18px 36px;
+    font-size: 1.2rem;
+    background-color: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    font-family: var(--font-secondary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .invitation-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-color);
+    transition: all 0.4s ease;
+    z-index: -1;
+  }
+
+  .invitation-btn:hover {
+    color: var(--light-text);
+  }
+
+  .invitation-btn:hover::before {
+    left: 0;
+  }
+
+  /* Couple Section */
+  .couple {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    background-image: url('../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh; /* Use dynamic viewport height for mobile */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .couple > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Couple section flowers */
+  .couple-floral-top-left,
+  .couple-floral-bottom-right {
+    position: absolute;
+    background-repeat: no-repeat;
+    opacity: 0.95;
+    z-index: 2;
+  }
+
+  .couple-floral-top-left {
+    top: 0;
+    left: 0;
+    width: 60vw;
+    height: 60vh;
+    background-image: url('../assets/top left flower.png');
+    background-size: contain;
+    background-position: top left;
+  }
+
+  .couple-floral-bottom-right {
+    bottom: 0;
+    right: 0;
+    width: 50vw;
+    height: 50vh;
+    background-image: url('../assets/bottom right flower.png');
+    background-size: contain;
+    background-position: bottom right;
+  }
+
+  .couple h3 {
+    color: var(--text-color);
+    font-family: 'Pinyon Script', cursive;
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    font-weight: 400;
+    z-index: 3;
+  }
+
+  .couple h4 {
+    color: var(--text-color);
+    font-family: 'Pinyon Script', cursive;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    font-weight: 400;
+    z-index: 3;
+  }
+
+  .couple-names h1 {
+    color: var(--text-color);
+    font-family: 'Pinyon Script', cursive;
+    font-size: 5.5rem;
+    margin: 0 20px;
+    font-weight: 400;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+  }
+
+  .couple-names h2 {
+    color: var(--text-color);
+    font-family: 'Alice', serif;
+    font-size: 3rem;
+    margin: 15px 0;
+    font-weight: 400;
+    letter-spacing: 1px;
+    z-index: 3;
+  }
+
+  .couple-names {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    z-index: 3;
+  }
+
+  .wedding-details {
+    margin-top: 20px;
+  }
+
+  .date-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin: 25px auto 30px auto;
+    border-top: 2px solid #6b4f2f;
+    border-bottom: 2px solid #6b4f2f;
+    padding: 20px 15px;
+    max-width: 500px;
+    width: 85%;
+  }
+
+  .date-section .month,
+  .date-section .time {
+    font-family: 'Alice', serif;
+    font-size: 1.2rem;
+    color: #6b4f2f;
+    letter-spacing: 2px;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  .date-section .day {
+    font-family: 'Alice', serif;
+    font-size: 4rem;
+    color: #6b4f2f;
+    font-weight: 700;
+    text-shadow: 3px 3px 6px rgba(255, 255, 255, 0.9);
+  }
+
+  .venue-section p {
+    font-family: 'Alice', serif;
+    color: #6b4f2f;
+    font-size: 1.1rem;
+    margin: 8px 0;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    letter-spacing: 1px;
+  }
+
+  /* Rest of your existing CSS sections (Countdown, Gallery, Schedule, FAQ, etc.) continue here... */
