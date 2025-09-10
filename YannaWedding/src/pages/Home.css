@@ -662,10 +662,12 @@
      - Adds .script-title, two-column helpers, and responsive stacking
   */
   .entourage {
-  background-color: #fdf8f4;
-  background-image: url('../assets/background.png');
-  background-size: cover;
-  background-position: center;
+    /* match other panels: use the same background image treatment */
+    background-image: url('../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #5a3e36;
     text-align: center;
     padding: 2rem 1.25rem;
@@ -705,8 +707,6 @@
   .entourage h2 {
     font-size: 1rem;
     letter-spacing: 2px;
-    font-weight: bold;
-    color: #553a36;
     margin-top: 2rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
@@ -853,17 +853,17 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: -20px; /* pull up to tuck more into bottom of panel for large flower */
+    /* pulled up so the large flower tucks into the bottom of the card */
+    margin-top: -140px;
     pointer-events: none; /* decorative only */
   }
 
   .entourage-flower {
-    width: 420px; /* requested large size on desktop */
+    width: 720px; /* large on desktop so only bottom peeks into panel */
     height: auto;
     display: block;
     transform: translateY(25px);
     filter: drop-shadow(0 22px 56px rgba(0,0,0,0.22));
-
   }
 
   /* Medium screens */
