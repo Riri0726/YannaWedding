@@ -6,14 +6,20 @@ import SideIconNav from "../components/SideIconNav";
 import RSVPList from "../components/RSVPList";
 import RSVPModal from "../components/RSVPModal";
 import { RSVPProvider } from "../context/RSVPContext";
+import InstaxGallery from "../components/InstaxGallery";
+import LocationCards from "../components/LocationCards";
+import CeremonyTimeline from "../components/CeremonyTimeline";
 
 // Import prenup video
-import prenupVideo from "../assets/Prenup.webp";
+import prenupVideo from "../assets/Prenup.mp4";
 // Import timeline images
 import image2007 from "../assets/2007.png";
 import image2021 from "../assets/2021.png";
 import image2025 from "../assets/2025.png";
 import flowerCenter from "../assets/flower center.png";
+import galleryBackground from "../assets/Gallery Background.png";
+import attireImage from "../assets/Attire.png";
+import colorPaletteImage from "../assets/Color Palette.png";
 
 const Home = () => {
   // Navigation scroll effect
@@ -306,19 +312,13 @@ const Home = () => {
             <br />
             Althea Maria Ellaine P. Pañuelos
           </p>
-          {/* centered flower below the entourage panel */}
-        <div className="entourage-flower-wrap">
-          <img src={flowerCenter} alt="flower center" className="entourage-flower" loading="lazy" />
         </div>
-        
-        </div>
-        
       </section>
 
       {/* Interactive Vertical Timeline Section */}
       <section className="timeline" id="story">
         <div className="timeline-container">
-          <h2 className="timeline-title">A STORY OF OUR ever after</h2>
+          <h2 className="timeline-title">A story of ourever after</h2>
 
           <div className="timeline-wrapper">
             <div className="timeline-line"></div>
@@ -365,11 +365,13 @@ const Home = () => {
       <section className="save-the-date" id="countdown">
         {/* Full screen background video */}
         <div className="fullscreen-video-bg">
-          <img
+          <video
             src={prenupVideo}
-            alt="Prenup video"
             className="prenup-video-fullscreen"
-            loading="lazy"
+            autoPlay
+            muted
+            loop
+            playsInline
           />
         </div>
 
@@ -404,39 +406,79 @@ const Home = () => {
       </section>
 
       {/* Gallery Section */}
-      <section className="gallery" id="gallery">
+      <section
+        className="gallery"
+        id="gallery"
+        style={{
+          backgroundImage: `url(${galleryBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
         <h2>OUR PHOTO Gallery</h2>
-        <p>To add more photos in our social media, please use our hashtag:</p>
-        <div className="gallery-grid">{/* Add your images here */}</div>
-        <h3>#YourHashtagHere</h3>
+        <p>
+          Click the Instax camera to shoot photos and create your own memory
+          pile!
+        </p>
+        <InstaxGallery />
       </section>
 
       {/* Schedule Section */}
       <section className="schedule" id="schedule">
         <h2>When & Where</h2>
-        <p>We love to see you soon!</p>
+        <p>Click each card to explore our wedding locations!</p>
+        <LocationCards />
+      </section>
 
-        <div className="ceremony">
-          <h3>The Ceremony</h3>
-          <h4>SAN JUAN DELA CRUZ PARISH</h4>
-          <p>Ugong, Valenzuela City</p>
-          <p>2:00 PM – 3:00 PM</p>
-        </div>
+      {/* Ceremony Timeline Panel */}
+      <section className="ceremony-timeline" id="ceremony-timeline">
+        <h2>Ceremony Timeline</h2>
+        <CeremonyTimeline />
+      </section>
 
-        <div className="reception">
-          <h3>The Reception</h3>
-          <h4>RADISSON HOTEL</h4>
-          <p>Manila, Philippines</p>
-          <p>04:00 PM – 08:00 pm</p>
+      {/* Attire Section */}
+      <section className="attire" id="attire">
+        <div className="section-container">
+          <h2>The Attire</h2>
+          <div className="attire-content">
+            <div className="attire-image">
+              <img src={attireImage} alt="Attire Guidelines" />
+            </div>
+            <div className="color-palette-image">
+              <img src={colorPaletteImage} alt="Color Palette" />
+            </div>
+            <h2>Please make sure to follow the attire guidelines!</h2>
+          </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="faq" id="faq">
+      {/* Gifts Section */}
+      <section className="gifts" id="gifts">
         <div className="section-container">
-          <h2>THE Big DAY</h2>
-          <h3>FREQUENTLY ASKED Questions</h3>
-          {/* FAQ items will be added here */}
+          <h2>Note on Gifts</h2>
+          <div className="gift-icon">
+            <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20,12 20,22 4,22 4,12" />
+              <rect x="2" y="7" width="20" height="5" />
+              <line x1="12" y1="22" x2="12" y2="7" />
+              <path d="m12 7-3-3h6l-3 3" />
+              <path d="m9 7 3 4 3-4" />
+            </svg>
+          </div>
+          <h3>
+            With all that we have,
+            <br />
+            we have been truly blessed.
+            <br />
+            Your presence & prayers
+            <br />
+            are all that we request.
+            <br />
+            But if you desire to give nonetheless,
+            <br />a monetary gift is one we suggest.
+          </h3>
         </div>
       </section>
 

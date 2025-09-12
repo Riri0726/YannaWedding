@@ -303,7 +303,7 @@ function createEmailTemplate(guestData, hasInvitationImage) {
       <div style="max-width: 600px; margin: 0 auto; background-color: white; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         
         <!-- Header -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center;">
+        <div style="background: #8d5b4c; color: #f9f1e7; padding: 40px 20px; text-align: center;">
           <h1 style="margin: 0; font-size: 28px; font-weight: 300;">You're Invited!</h1>
           <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">To celebrate the wedding of</p>
         </div>
@@ -311,16 +311,16 @@ function createEmailTemplate(guestData, hasInvitationImage) {
         <!-- Main Content -->
         <div style="padding: 40px 20px;">
           <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="margin: 0; font-size: 32px; color: #333; font-weight: 400;">Third & Aleanna</h2>
-            <p style="margin: 10px 0; font-size: 18px; color: #666;">August 31, 2025</p>
+            <h2 style="margin: 0; font-size: 32px; color: #2c1810; font-weight: 400;">Third & Aleanna</h2>
+            <p style="margin: 10px 0; font-size: 18px; color: #8d5b4c;">October 11, 2025</p>
           </div>
 
           <!-- Personalized Greeting -->
           <div style="margin-bottom: 30px;">
-            <p style="font-size: 16px; color: #333; line-height: 1.6;">
+            <p style="font-size: 16px; color: #2c1810; line-height: 1.6;">
               Dear ${guestData.name},
             </p>
-            <p style="font-size: 16px; color: #333; line-height: 1.6;">
+            <p style="font-size: 16px; color: #2c1810; line-height: 1.6;">
               We are delighted to invite you to celebrate our special day with us! Your presence would mean the world to us as we begin this new chapter of our lives together.
             </p>
           </div>
@@ -329,32 +329,32 @@ function createEmailTemplate(guestData, hasInvitationImage) {
           ${invitationImageHtml}
 
           <!-- Event Details -->
-          <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; margin: 30px 0;">
-            <h3 style="margin: 0 0 20px 0; color: #333; text-align: center;">Wedding Details</h3>
+          <div style="background-color: #f9f1e7; padding: 30px; border-radius: 10px; margin: 30px 0;">
+            <h3 style="margin: 0 0 20px 0; color: #2c1810; text-align: center;">Wedding Details</h3>
             
             <div style="margin-bottom: 20px;">
-              <h4 style="margin: 0 0 5px 0; color: #555; font-size: 16px;">📅 Date & Time</h4>
-              <p style="margin: 0; color: #666;">Sunday, August 31, 2025 at 2:00 PM</p>
+              <h4 style="margin: 0 0 5px 0; color: #8d5b4c; font-size: 16px;">📅 Date & Time</h4>
+              <p style="margin: 0; color: #2c1810;">Saturday, October 11, 2025 at 2:00 PM</p>
             </div>
 
             <div style="margin-bottom: 20px;">
-              <h4 style="margin: 0 0 5px 0; color: #555; font-size: 16px;">⛪ Ceremony</h4>
-              <p style="margin: 0; color: #666;">St. Joseph Parish Church<br>Manila, Philippines</p>
+              <h4 style="margin: 0 0 5px 0; color: #8d5b4c; font-size: 16px;">⛪ Ceremony</h4>
+              <p style="margin: 0; color: #2c1810;">SAN JUAN DELA CRUZ PARISH<br>Ugong, Valenzuela City</p>
             </div>
 
             <div>
-              <h4 style="margin: 0 0 5px 0; color: #555; font-size: 16px;">🎉 Reception</h4>
-              <p style="margin: 0; color: #666;">Radisson Hotel<br>Manila, Philippines</p>
+              <h4 style="margin: 0 0 5px 0; color: #8d5b4c; font-size: 16px;">🎉 Reception</h4>
+              <p style="margin: 0; color: #2c1810;">Patio Queen Sofia<br>21 F. de la Cruz, Valenzuela, Metro Manila<br>4:30 PM</p>
             </div>
           </div>
 
           <!-- RSVP Information -->
           <div style="text-align: center; margin: 30px 0;">
-            <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+            <p style="font-size: 16px; color: #2c1810; margin-bottom: 20px;">
               Thank you for confirming your attendance! We can't wait to celebrate with you.
             </p>
             
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px;">
+            <div style="background: #d4b08c; color: #2c1810; padding: 20px; border-radius: 10px;">
               <h4 style="margin: 0 0 10px 0;">RSVP Status: Confirmed ✅</h4>
               <p style="margin: 0; font-size: 14px; opacity: 0.9;">
                 ${guestData.guest_type === 'bride' ? "Friend of the Bride" : "Friend of the Groom"}
@@ -363,32 +363,37 @@ function createEmailTemplate(guestData, hasInvitationImage) {
             </div>
           </div>
 
-          <!-- Contact Information -->
-          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px; margin: 30px 0;">
-            <h4 style="margin: 0 0 15px 0; color: #333; text-align: center;">Questions?</h4>
-            <p style="margin: 0; text-align: center; color: #666; font-size: 14px;">
+          <!-- Website & Contact Information -->
+          <div style="background-color: #f9f1e7; padding: 20px; border-radius: 10px; margin: 30px 0;">
+            <h4 style="margin: 0 0 15px 0; color: #2c1810; text-align: center;">Visit Our Wedding Website</h4>
+            <p style="margin: 0 0 15px 0; text-align: center; color: #8d5b4c; font-size: 16px;">
+              <a href="https://thirdandaleanna.website" style="color: #8d5b4c; text-decoration: none; font-weight: 500;">
+                thirdandaleanna.website
+              </a>
+            </p>
+            <p style="margin: 0; text-align: center; color: #2c1810; font-size: 14px;">
               If you have any questions, please don't hesitate to reach out to us.
             </p>
           </div>
 
           <!-- Closing -->
           <div style="text-align: center; margin: 30px 0;">
-            <p style="font-size: 16px; color: #333; font-style: italic;">
+            <p style="font-size: 16px; color: #2c1810; font-style: italic;">
               With love and excitement,
             </p>
-            <p style="font-size: 18px; color: #667eea; font-weight: 500; margin: 10px 0;">
+            <p style="font-size: 18px; color: #8d5b4c; font-weight: 500; margin: 10px 0;">
               Third & Aleanna
             </p>
           </div>
         </div>
 
         <!-- Footer -->
-        <div style="background-color: #333; color: white; padding: 20px; text-align: center;">
+        <div style="background-color: #2c1810; color: #f9f1e7; padding: 20px; text-align: center;">
           <p style="margin: 0; font-size: 14px; opacity: 0.8;">
             This invitation was sent because you RSVP'd "Yes" to our wedding.
           </p>
           <p style="margin: 10px 0 0 0; font-size: 12px; opacity: 0.6;">
-            Third & Aleanna's Wedding • August 31, 2025 • Manila, Philippines
+            Third & Aleanna's Wedding • October 11, 2025 • Valenzuela City, Philippines
           </p>
         </div>
 

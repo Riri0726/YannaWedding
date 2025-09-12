@@ -42,7 +42,11 @@
   .countdown,
   .gallery,
   .schedule,
-  .faq {
+  .ceremony-timeline,
+  .attire,
+  .gifts,
+  .faq,
+  .rsvp {
     width: 100%;
     min-height: 100vh;
     min-height: 100dvh; /* Use dynamic viewport height for mobile */
@@ -351,12 +355,14 @@
 
   .timeline-title {
     text-align: center;
-    font-family: 'Pinyon Script', cursive;
-    font-size: 4rem;
+    font-family: 'Corinthia', 'Dancing Script', 'Brush Script MT', cursive;
+    font-size: 5rem;
     color: #6b4f2f;
     margin-bottom: 60px;
     text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
-    font-weight: 400;
+    font-weight: 800;
+    font-style: italic;
+ 
   }
 
   .timeline-wrapper {
@@ -1306,7 +1312,98 @@
     padding: 100px 20px;
     text-align: center;
     background-color: var(--secondary-color);
+    background-image: url('../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     position: relative;
+  }
+
+  /* Ceremony Timeline Panel */
+  .ceremony-timeline {
+    padding: 100px 20px;
+    text-align: center;
+    background: #fffaf6;
+    background-image: url('../assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .ceremony-timeline h2 {
+    font-family: var(--font-primary);
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    font-size: 3.5rem;
+  }
+
+  /* Attire Section */
+  .attire {
+    padding: 100px 20px;
+    text-align: center;
+    background-color: var(--secondary-color);
+  }
+
+  .attire h2 {
+    font-family: var(--font-primary);
+    color: var(--accent-color);
+    margin-bottom: 40px;
+    font-size: 3rem;
+  }
+
+  .attire-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .attire-image,
+  .color-palette-image {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .attire-image img,
+  .color-palette-image img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Gifts Section */
+  .gifts {
+    padding: 100px 20px;
+    text-align: center;
+    background-color: white;
+  }
+
+  .gifts h2 {
+    font-family: var(--font-primary);
+    color: var(--accent-color);
+    font-size: 3rem;
+    margin-bottom: 40px;
+  }
+
+  .gift-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    color: var(--accent-color);
+  }
+
+  .gifts h3 {
+    font-family: var(--font-secondary);
+    color: var(--text-color);
+    font-size: 1.4rem;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto;
+    font-style: italic;
   }
 
   .schedule h2 {

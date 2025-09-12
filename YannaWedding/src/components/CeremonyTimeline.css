@@ -1,0 +1,119 @@
+.ctimeline-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.ctimeline {
+  position: relative;
+  max-width: 1100px;
+  width: 100%;
+  padding: 50px 20px;
+}
+
+.ctimeline-base-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #2c1810;
+  transform: translateY(-50%);
+  border-radius: 2px;
+}
+
+.ctimeline-items {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  position: relative;
+}
+
+.ctimeline-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ctimeline-dot {
+  width: 14px;
+  height: 14px;
+  background: #2c1810;
+  border-radius: 50%;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 3px #fff, 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.ctimeline-content {
+  text-align: center;
+  max-width: 120px;
+}
+
+.ctimeline-icon {
+  margin-bottom: 2px;
+  color: #2c1810;
+}
+
+.ctimeline-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #2c1810;
+  margin-bottom: 2px;
+}
+
+.ctimeline-time {
+  font-size: 0.8rem;
+  color: #2c1810;
+  opacity: 0.85;
+  margin-top: 0;
+}
+
+.ctimeline-item.above .ctimeline-content {
+  margin-bottom: 30px;
+  transform: translateY(-100%);
+}
+
+.ctimeline-item.below .ctimeline-content {
+  margin-top: 30px;
+  transform: translateY(100%);
+}
+
+@media (max-width: 768px) {
+  /* HORIZONTAL pa rin sa mobile, mas maliit lang */
+  .ctimeline {
+    padding: 20px 8px;
+  }
+  .ctimeline-items {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .ctimeline-content {
+    max-width: 70px;
+  }
+  .ctimeline-label {
+    font-size: 0.65rem;
+    line-height: 1.1;
+    margin-bottom: 1px;
+  }
+  .ctimeline-time {
+    font-size: 0.55rem;
+    line-height: 1.1;
+    margin-top: 0;
+  }
+  .ctimeline-icon {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 2px;
+  }
+  .ctimeline-item.above .ctimeline-content {
+    margin-bottom: 20px;
+  }
+  .ctimeline-item.below .ctimeline-content {
+    margin-top: 20px;
+  }
+}

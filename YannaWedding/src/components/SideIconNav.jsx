@@ -56,14 +56,16 @@ const SideIconNav = () => {
   return (
     <nav className="side-icon-nav" aria-label="Quick navigation">
       <ul>
-        <li><a href="#home" aria-label="Home" title="Home">{icons.home}</a></li>
-        <li><a href="#rsvp" aria-label="RSVP" title="RSVP">{icons.mail}</a></li>
-        <li><a href="#gallery" aria-label="Gallery" title="Gallery">{icons.image}</a></li>
-        <li><a href="#schedule" aria-label="Schedule" title="Schedule">{icons.hourglass}</a></li>
+        <li><a href="#home" aria-label="Home" title="Click to see our invitation">{icons.home}</a></li>
+        <li><a href="#couple" aria-label="Invitation" title="Invitation">{icons.mail}</a></li>
+        <li><a href="#entourage" aria-label="Entourage" title="Entourage">{icons.menu}</a></li>
+        <li><a href="#story" aria-label="Story" title="Story of us Timeline">{icons.hourglass}</a></li>
+        <li><a href="#countdown" aria-label="Save the Date" title="Save the date">{icons.image}</a></li>
+        <li><a href="#gallery" aria-label="Gallery" title="Photo Gallery">{icons.image}</a></li>
+        <li><a href="#schedule" aria-label="When & Where" title="When and Where">{icons.pin}</a></li>
+        <li><a href="#ceremony-timeline" aria-label="Timeline" title="Ceremony Timeline">{icons.hourglass}</a></li>
         <li><a href="#attire" aria-label="Attire" title="Attire">{icons.shirt}</a></li>
-        <li><a href="#gifts" aria-label="Gifts" title="Gifts">{icons.gift}</a></li>
-        <li><a href="#location" aria-label="Location" title="Location">{icons.pin}</a></li>
-        <li><a href="#menu" aria-label="Menu" title="Menu">{icons.menu}</a></li>
+        <li><a href="#rsvp" aria-label="RSVP" title="RSVP">{icons.mail}</a></li>
       </ul>
     </nav>
   );

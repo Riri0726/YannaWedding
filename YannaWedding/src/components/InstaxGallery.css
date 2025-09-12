@@ -1,0 +1,267 @@
+/* Instax Gallery Styles */
+.instax-gallery {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.gallery-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  min-height: 500px;
+  align-items: center;
+}
+
+/* Camera Section */
+.camera-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.instax-camera {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.instax-camera:hover {
+  transform: scale(1.05);
+}
+
+.instax-camera.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.instax-camera.disabled:hover {
+  transform: none;
+}
+
+.instax-camera.shooting {
+  animation: cameraShake 0.5s ease-in-out;
+}
+
+.instax-camera img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+}
+
+/* Camera flash effect */
+.camera-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  border-radius: 20px;
+  animation: flashEffect 0.15s ease-out;
+  pointer-events: none;
+}
+
+.photos-remaining {
+  margin-top: 20px;
+  font-family: var(--font-secondary);
+  color: var(--text-color);
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Photo Pile Section */
+.photo-pile-section {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-pile {
+  position: relative;
+  width: 100%;
+  height: 500px;
+}
+
+/* Individual shot photos */
+.shot-photo {
+  position: absolute;
+  width: 180px;
+  height: 220px;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.shot-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Shooting animation */
+.shot-photo.shooting {
+  animation: photoShoot 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Stacked state */
+.shot-photo.stacked {
+  animation: stackSettle 0.5s ease-out;
+}
+
+.shot-photo.stacked:hover {
+  transform: translate(-50%, -50%) rotate(0deg) scale(1.1) !important;
+  z-index: 999 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Gallery Controls */
+.gallery-controls {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.reset-btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reset-btn:hover {
+  background: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.reset-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Animations */
+@keyframes photoShoot {
+  0% {
+    left: 20%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(5deg) scale(0.6);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--final-rotation, 0deg)) scale(1);
+  }
+}
+
+@keyframes stackSettle {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--final-rotation, 0deg)) scale(1.2);
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(var(--final-rotation, 0deg)) scale(0.95);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--final-rotation, 0deg)) scale(1);
+  }
+}
+
+@keyframes cameraShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px) rotate(-1deg); }
+  75% { transform: translateX(2px) rotate(1deg); }
+}
+
+@keyframes flashEffect {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gallery-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+  
+  .instax-camera img {
+    max-width: 250px;
+  }
+  
+  .photo-pile-section {
+    min-height: 400px;
+  }
+  
+  .photo-pile {
+    height: 400px;
+  }
+  
+  .shot-photo {
+    width: 140px;
+    height: 170px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .instax-gallery {
+    padding: 20px 10px;
+  }
+  
+  .gallery-content {
+    gap: 20px;
+  }
+  
+  .instax-camera img {
+    max-width: 200px;
+  }
+  
+  .photo-pile-section {
+    min-height: 350px;
+  }
+  
+  .photo-pile {
+    height: 350px;
+  }
+  
+  .shot-photo {
+    width: 120px;
+    height: 150px;
+    padding: 6px;
+  }
+  
+  .photos-remaining {
+    font-size: 1rem;
+  }
+  
+  .reset-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+}
