@@ -66,18 +66,19 @@ const FloralHero = () => {
   const handleMouseMove = (e) => {
     const el = rootRef.current;
     if (!el) return;
-  // don't run parallax on touch / coarse pointers
-  if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
-  if ('ontouchstart' in window) return;
+    // don't run parallax on touch / coarse pointers
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+    if ('ontouchstart' in window) return;
+
     const rect = el.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    // normalized -1 .. 1 values
-    const nx = (e.clientX - cx) / (rect.width / 2);
-    const ny = (e.clientY - cy) / (rect.height / 2);
-    // clamp
-    const mx = Math.max(-1, Math.min(1, nx));
-    const my = Math.max(-1, Math.min(1, ny));
+    // Calculate position relative to the center of the element
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    
+    // Convert to -0.5 to 0.5 range for natural following motion
+    const mx = (x - 0.5) * 0.5;
+    const my = (y - 0.5) * 0.5;
+    
     el.style.setProperty('--mx', mx.toFixed(3));
     el.style.setProperty('--my', my.toFixed(3));
   };
@@ -162,7 +163,7 @@ const FloralHero = () => {
           <img src={logo} alt="Wedding Logo" className="wedding-logo" />
         </div>
 
-        <div className="wedding-date">08.31.2025</div>
+        <div className="wedding-date">10.11.2025</div>
 
         <button className="invitation-btn" onClick={() => {
           const coupleSection = document.getElementById('couple');

@@ -280,18 +280,15 @@ const GuestsAdmin = ({
     return true;
   });
 
-  // Filter individual guests
+  // Only show top-level individual guests (no companion_of)
   const filteredIndividualGuests = individualGuests.filter(guest => {
-    // Filter by guest type (bride/groom/all)
+    if (guest.companion_of) return false;
     if (filter !== 'all' && guest.guest_type !== filter) {
       return false;
     }
-    
-    // Filter by search term (guest name)
     if (searchTerm && !guest.name.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
-    
     return true;
   });
 
@@ -524,6 +521,33 @@ const GuestsAdmin = ({
                           </td>
                           <td>{item.guest_type === 'bride' ? 'Bride\'s Guest' : 'Groom\'s Guest'}</td>
                         </tr>
+                        {/* Show companions for this individual guest */}
+                        {individualGuests.filter(g => g.companion_of === item.id).map(companion => (
+                          <tr key={companion.id} className="companion-row">
+                            <td style={{ paddingLeft: '2em' }}>↳ {companion.name}</td>
+                            <td>{companion.email || '-'}</td>
+                            <td>
+                              <div 
+                                className="clickable-status"
+                                onClick={() => openQuickStatusModal(companion)}
+                                title="Click to change status"
+                              >
+                                {companion.rsvp_submitted ? (
+                                  companion.is_coming === true ? (
+                                    <span className="status-going">Going</span>
+                                  ) : companion.is_coming === false ? (
+                                    <span className="status-not-going">Not Going</span>
+                                  ) : (
+                                    <span className="status-pending">Pending</span>
+                                  )
+                                ) : (
+                                  <span className="status-pending">Pending</span>
+                                )}
+                              </div>
+                            </td>
+                            <td>Companion</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
@@ -770,6 +794,31 @@ const GuestsAdmin = ({
                   onChange={(e) => setGuestForm({...guestForm, email: e.target.value})}
                 />
               </div>
+              {/* Show companion and guest type fields for individual guests */}
+              {editingGuest && editingGuest.role === 'individual' && !editingGuest.companion_of && (
+                <>
+                  <div className="form-group">
+                    <label>Can Bring Companions?</label>
+                    <input
+                      type="number"
+                      value={guestForm.max_count || 0}
+                      onChange={(e) => setGuestForm({...guestForm, max_count: parseInt(e.target.value) || 0})}
+                      min="0"
+                      placeholder="Number of companions (0 = no companions)"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Guest Type:</label>
+                    <select
+                      value={guestForm.guest_type || 'bride'}
+                      onChange={(e) => setGuestForm({...guestForm, guest_type: e.target.value})}
+                    >
+                      <option value="bride">Bride's Guest</option>
+                      <option value="groom">Groom's Guest</option>
+                    </select>
+                  </div>
+                </>
+              )}
               <div className="modal-actions">
                 <button type="submit" className="btn-primary">Update Guest</button>
                 <button type="button" onClick={() => setShowEditGuestModal(false)} className="btn-secondary">Cancel</button>

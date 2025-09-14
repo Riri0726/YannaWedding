@@ -263,6 +263,30 @@ export const guestService = {
   async deleteGuest(guestId) {
     try {
       const ref = doc(db, 'guests', guestId);
+      // First, get the guest to check if it's an individual (main guest)
+      const guestSnap = await getDoc(ref);
+      if (guestSnap.exists()) {
+        const guestData = guestSnap.data();
+        // If this is a main individual guest (role === 'individual' and no companion_of), delete all companions
+        if (guestData.role === 'individual' && !guestData.companion_of) {
+          const guestsCol = collection(db, 'guests');
+          console.log('[Cascade Delete] Looking for companions with companion_of:', guestId);
+          const q = query(guestsCol, where('companion_of', '==', guestId));
+          const companionsSnap = await getDocs(q);
+          console.log('[Cascade Delete] Found companions:', companionsSnap.docs.map(d => ({id: d.id, ...d.data()})));
+          const batch = writeBatch(db);
+          companionsSnap.docs.forEach(doc => {
+            console.log('[Cascade Delete] Deleting companion:', doc.id);
+            batch.delete(doc.ref);
+          });
+          console.log('[Cascade Delete] Deleting main guest:', guestId);
+          batch.delete(ref);
+          await batch.commit();
+          return true;
+        }
+      }
+      // Otherwise, just delete the guest
+      console.log('[Cascade Delete] Deleting single guest:', guestId);
       await deleteDoc(ref);
       return true;
     } catch (error) {
@@ -318,6 +342,7 @@ export const adminService = {
       group_count_max: Number(group.group_count_max) || 0,
       is_predetermined: Boolean(group.is_predetermined) || false,
       guest_type: group.guest_type || 'bride',
+      role: group.role || 'family',
       createdAt: new Date().toISOString()
     });
     return { id: created.id };
@@ -361,15 +386,22 @@ export const adminService = {
   },
 
   async createGuest(guest) {
-    if (!guest.group_id) throw new Error('group_id is required');
+    // Only require group_id for non-individual guests
+    if (!guest.group_id && !(guest.role === 'individual' && guest.in_group === false)) {
+      throw new Error('group_id is required');
+    }
     const guestsCol = collection(db, 'guests');
     const created = await addDoc(guestsCol, {
-      group_id: guest.group_id,
-      name: guest.name || '',
-      is_coming: guest.is_coming ?? null,
-      in_group: guest.in_group ?? true,
-      email: guest.email || '',
-      createdAt: new Date().toISOString()
+  group_id: guest.group_id || null,
+  name: guest.name || '',
+  is_coming: guest.is_coming ?? null,
+  rsvp_submitted: guest.rsvp_submitted ?? false,
+  in_group: guest.in_group ?? false,
+  email: guest.email || '',
+  guest_type: guest.guest_type || 'bride',
+  role: guest.role || 'individual',
+  companion_of: guest.companion_of || null,
+  createdAt: new Date().toISOString()
     });
     return { id: created.id };
   },

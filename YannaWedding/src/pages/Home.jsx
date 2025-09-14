@@ -19,6 +19,7 @@ import image2025 from "../assets/2025.jpg";
 import flowerCenter from "../assets/flower center.png";
 import galleryBackground from "../assets/Gallery Background.png";
 import attireImage from "../assets/Attire.png";
+import attireImage2 from "../assets/Attire2.png";
 import colorPaletteImage from "../assets/Color Palette.png";
 
 const Home = () => {
@@ -164,13 +165,25 @@ const Home = () => {
         </div>
         <div className="wedding-details">
           <div className="date-section">
+            <hr style={{ border: '1px solid #6B4F1D', margin: '25px 0' }} />
             <span className="month">OCTOBER</span>
             <span className="day">11</span>
-            <span className="time">2:00 PM</span>
+            <span className="time">2025</span>
+            <hr style={{ border: '1px solid #6B4F1D', margin: '25px 0' }} />
           </div>
           <div className="venue-section">
             <p>SAN JUAN DELA CRUZ PARISH</p>
             <p>Ugong, Valenzuela City</p>
+         
+            <p>2:00 PM</p>
+            <hr style={{ border: '1px solid #6B4F1D', margin: '12px 0' }} />
+            
+          </div>
+           <div className="venue-section">
+            <p>PATIO QUEEN SOFIA</p>
+            <p>Maysan, Valenzuela City</p>
+           
+            <p>4:30 PM</p>
           </div>
         </div>
       </section>
@@ -183,6 +196,7 @@ const Home = () => {
           <div>
             <h2>PARENTS OF THE GROOM</h2>
             <p>Analiza E. Rivero</p>
+            <p>Krismon Rivero (Uncle)</p>
           </div>
 
           <div>
@@ -204,7 +218,7 @@ const Home = () => {
                     <br />
                     Brgy. Capt. Rizalino Ferrer
                     <br />
-                    Mr. Pedro Candidato Jr.
+                    Mr. Pedro Candido Jr.
                     <br />
                     Mr. Joe King Tiong
                     <br />
@@ -221,11 +235,11 @@ const Home = () => {
                   <p>
                     Mrs. Elsa Delos Reyes Sy
                     <br />
-                    Mrs. Purificacion Rivero Cabingao
+                    Mrs. Purification Rivero Cabingao
                     <br />
                     Fiscal Edna Urbano Aninias
                     <br />
-                    Dra. Alpha Salvador Montaas
+                    Dra. Alpha Salvador Montaos
                     <br />
                     Mrs. Carol S. Tiong
                     <br />
@@ -235,7 +249,7 @@ const Home = () => {
                     <br />
                     Dr. Catherine G. De Gula
                     <br />
-                    Coun. Lorena Matalud Borja
+                    Coun. Lorena Natividad Borja
                   </p>
                 </div>
               </div>
@@ -268,7 +282,7 @@ const Home = () => {
               <p>
                 Jarode Gerard Molina
                 <br />
-                Justine Licanne Tiong
+                Justine Lieanne Tiong
               </p>
             </div>
           </div>
@@ -344,7 +358,7 @@ const Home = () => {
                 </div>
                 <div className="timeline-text">
                   <h3>2007</h3>
-                  <p>Where we met</p>
+                  <p>When we met</p>
                 </div>
               </div>
 
@@ -432,8 +446,7 @@ const Home = () => {
       >
         <h2>OUR PHOTO Gallery</h2>
         <p>
-          Click the Instax camera to shoot photos and create your own memory
-          pile!
+          Click the Instax camera to see our prenup photos!
         </p>
         <InstaxGallery />
       </section>
@@ -454,7 +467,7 @@ const Home = () => {
       {/* Attire Section */}
       <section className="attire" id="attire">
         <div className="section-container">
-          <h2>Guests color palette</h2>
+          <h2>Guests Color Palette</h2>
           <div className="attire-content">
             <div className="attire-grid">
               <div className="attire-grid-item">
@@ -466,16 +479,12 @@ const Home = () => {
                 </div>
               </div>
               <div className="attire-grid-item">
-                {/* Using same images as placeholder */}
-                <div className="attire-image">
-                  <img src={attireImage} alt="Additional Attire Guidelines" />
-                </div>
-                <div className="color-palette-image">
-                  <img src={colorPaletteImage} alt="Additional Color Palette" />
+                <div className="attire-image attire-image--tall">
+                  <img src={attireImage2} alt="Additional Attire Guidelines" />
                 </div>
               </div>
             </div>
-            <h2>Please make sure to follow the attire guidelines!</h2>
+            <h2 className="attire-guidance">Please make sure to follow the attire guidelines!</h2>
           </div>
         </div>
       </section>

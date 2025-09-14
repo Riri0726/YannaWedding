@@ -120,15 +120,15 @@ const RSVPList = () => {
     
     const filterByGuestType = (items, isGuest = false) => {
       return items.filter(item => {
+        // Filter out companions (guests with companion_of property)
+        if (isGuest && item.companion_of) return false;
         // Filter by guest type (bride/groom)
         if (item.guest_type !== selectedSide) return false;
-        
         // Filter by search term
         const searchField = isGuest ? item.name : item.group_name;
         if (searchTerm && !searchField.toLowerCase().includes(searchTerm.toLowerCase())) {
           return false;
         }
-        
         return true;
       });
     };

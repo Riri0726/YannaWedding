@@ -25,22 +25,22 @@
 .floral-layer.layer--slow {
   background-image: radial-gradient(circle at 10% 20%, rgba(244, 230, 226, 0.9), transparent 25%), radial-gradient(circle at 85% 80%, rgba(241, 233, 229, 0.9), transparent 20%);
   animation: float-slow 18s linear infinite;
-  transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+  transform: translate3d(calc(var(--mx, 0) * 15px), calc(var(--my, 0) * 15px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 .floral-layer.layer--medium {
   background-image: radial-gradient(circle at 20% 80%, rgba(249, 243, 241, 0.95), transparent 20%), radial-gradient(circle at 75% 15%, rgba(247, 238, 235, 0.95), transparent 18%);
   opacity: 0.36;
   animation: float-medium 12s linear infinite;
-  transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 12px), 0);
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+  transform: translate3d(calc(var(--mx, 0) * 25px), calc(var(--my, 0) * 25px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 .floral-layer.layer--fast {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 250, 248, 0.95), transparent 15%);
   opacity: 0.42;
   animation: float-fast 9s linear infinite;
-  transform: translate3d(calc(var(--mx, 0) * 20px), calc(var(--my, 0) * 20px), 0);
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+  transform: translate3d(calc(var(--mx, 0) * 35px), calc(var(--my, 0) * 35px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 /* separated floral elements for better responsive control */
@@ -53,8 +53,8 @@
   background-repeat: no-repeat;
   opacity: 0.85;
   z-index: 1;
-  transform: translate3d(calc(var(--mx, 0) * 8px), calc(var(--my, 0) * 8px), 0);
-  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+  transform: translate3d(calc(var(--mx, 0) * 20px), calc(var(--my, 0) * 20px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .floral-corner {
@@ -73,7 +73,8 @@
   background-image: url('../assets/top left flower.png');
   background-size: contain;
   background-position: top left;
-  transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 12px), 0);
+  transform: translate3d(calc(var(--mx, 0) * 30px), calc(var(--my, 0) * 30px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 .floral-bottom-right {
@@ -84,7 +85,8 @@
   background-image: url('../assets/bottom right flower.png');
   background-size: contain;
   background-position: bottom right;
-  transform: translate3d(calc(var(--mx, 0) * 10px), calc(var(--my, 0) * 10px), 0);
+  transform: translate3d(calc(var(--mx, 0) * 30px), calc(var(--my, 0) * 30px), 0);
+  transition: transform 800ms cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 @keyframes float-slow {

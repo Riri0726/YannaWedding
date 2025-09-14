@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './LocationCards.css';
 
@@ -30,7 +30,29 @@ const locations = [
 ];
 
 const LocationCard = ({ location }) => {
-  const [cardState, setCardState] = useState('front'); // 'front', 'back', 'expanded'
+  const [cardState, setCardState] = useState('front'); // 'front', 'back'
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Track small-screen state so we don't render the extra expanded map on mobile
+    const mql = window.matchMedia('(max-width: 768px)');
+    const handleChange = (e) => setIsMobile(e.matches);
+    // set initial
+    setIsMobile(mql.matches);
+    // add listener with compatibility
+    if (mql.addEventListener) {
+      mql.addEventListener('change', handleChange);
+    } else if (mql.addListener) {
+      mql.addListener(handleChange);
+    }
+    return () => {
+      if (mql.removeEventListener) {
+        mql.removeEventListener('change', handleChange);
+      } else if (mql.removeListener) {
+        mql.removeListener(handleChange);
+      }
+    };
+  }, []);
 
   const handleCardClick = () => {
     if (cardState === 'front') {
@@ -60,6 +82,15 @@ const LocationCard = ({ location }) => {
         }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
+      {/* Image panel stays visible beside the flipping card */}
+      <div className="card-image-container">
+        <img src={location.image} alt={`${location.title} photo`} className="location-image" />
+        <div className="image-overlay">
+          <div className="overlay-title">{location.title}</div>
+          <div className="overlay-address">{location.address}</div>
+        </div>
+      </div>
+
       <div 
         className="location-card" 
         onClick={handleCardClick}
@@ -100,15 +131,31 @@ const LocationCard = ({ location }) => {
             transition={{ duration: 0.6, ease: 'easeInOut' }}
             style={{ visibility: cardState === 'front' ? 'hidden' : 'visible', zIndex: cardState === 'front' ? 1 : 3 }}
           >
-            <div className="card-image-container" style={{ background: 'rgba(0,200,0,0.08)' }}>
-              <img 
-                src={location.image} 
-                alt={location.title}
-                className="location-image"
-              />
-              <div className="image-overlay">
-                <h3 className="overlay-title">{location.title}</h3>
-                <p className="overlay-address">{location.address}</p>
+            <div className="map-section" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className="map-header">
+                <h4>Location Map</h4>
+              </div>
+              <div className="map-container" style={{ flex: 1 }}>
+                <iframe
+                  src={location.mapUrl}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, borderRadius: '8px', minHeight: '250px' }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title={`Map of ${location.title}`}
+                />
+                <div className="map-actions">
+                  <a 
+                    href={location.googleMapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="directions-btn"
+                  >
+                    Get Directions
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -116,64 +163,43 @@ const LocationCard = ({ location }) => {
       </div>
 
       {/* Arrow Button - Outside the card */}
-      {cardState === 'back' && (
-        <motion.button
-          className="expand-arrow-external"
-          onClick={handleArrowClick}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <span>→</span>
-        </motion.button>
-      )}
+      {/* No arrow button, map will show automatically when card is flipped */}
 
       {/* Expanded Map Section */}
-      <AnimatePresence mode="wait">
-        {cardState === 'expanded' && (
-          <motion.div
-            className="map-section"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <div className="map-header">
-              <h4>Location Map</h4>
-              <button 
-                className="close-map-btn"
-                onClick={handleCloseExpanded}
+      {cardState === 'back' && !isMobile && (
+        <motion.div
+          className="map-section"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 50 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          <div className="map-header">
+            <h4>Location Map</h4>
+          </div>
+          <div className="map-container">
+            <iframe
+              src={location.mapUrl}
+              width="100%"
+              style={{ border: 0, borderRadius: '8px' }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title={`Map of ${location.title}`}
+            />
+            <div className="map-actions">
+              <a 
+                href={location.googleMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="directions-btn"
               >
-                ✕
-              </button>
+                Get Directions
+              </a>
             </div>
-             <div className="map-container">
-               <iframe
-                 src={`https://www.google.com/maps?q=${encodeURIComponent(location.address)}&output=embed`}
-                 width="100%"
-                 style={{ border: 0, borderRadius: '8px' }}
-                 allowFullScreen=""
-                 loading="lazy"
-                 referrerPolicy="no-referrer-when-downgrade"
-                 title={`Map of ${location.title}`}
-               />
-              <div className="map-actions">
-                <a 
-                  href={location.googleMapsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="directions-btn"
-                >
-                  Get Directions
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
