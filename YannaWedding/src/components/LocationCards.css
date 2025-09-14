@@ -32,6 +32,9 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   flex-shrink: 0;
+  background-color: transparent;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 .location-card:hover {
@@ -45,7 +48,9 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   perspective: 1200px;
+  background-color: transparent;
 }
 
 /* Card Faces */
@@ -59,6 +64,9 @@
   -webkit-backface-visibility: hidden;
   border-radius: 15px;
   overflow: hidden;
+  background-color: transparent;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 /* Front Face Styles */
@@ -133,7 +141,9 @@
 /* Back Face Styles */
 .card-back {
   transform: rotateY(180deg);
-  background: transparent;
+  background-color: transparent;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .card-image-container {
@@ -143,7 +153,9 @@
   width: 100%;
   height: 100%;
   z-index: 0;
-  outline: 2px dashed #0c0; /* DEBUG */
+  background-color: transparent;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .location-image {
@@ -155,7 +167,7 @@
   object-fit: cover;
   display: block;
   z-index: 1;
-  outline: 2px solid #0c0; /* DEBUG */
+  transition: opacity 0.6s ease;
 }
 
 .image-overlay {
@@ -163,7 +175,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to top, 
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.4) 50%,
+    transparent
+  );
   color: white;
   padding: 30px;
   text-align: left;
@@ -177,13 +193,31 @@
   font-weight: 700;
   margin-bottom: 8px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.6s ease forwards 0.3s;
 }
 
 .overlay-address {
   font-family: var(--font-secondary);
   font-size: 1rem;
-  opacity: 0.95;
+  opacity: 0;
   margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(10px);
+  animation: fadeInUp 0.6s ease forwards 0.4s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* External Expand Arrow - Outside the card */

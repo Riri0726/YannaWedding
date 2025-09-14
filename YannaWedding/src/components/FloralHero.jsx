@@ -164,7 +164,12 @@ const FloralHero = () => {
 
         <div className="wedding-date">08.31.2025</div>
 
-        <button className="invitation-btn">Click to See our Invitation</button>
+        <button className="invitation-btn" onClick={() => {
+          const coupleSection = document.getElementById('couple');
+          if (coupleSection) {
+            coupleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }}>Click to See our Invitation</button>
       </div>
     </div>
   );

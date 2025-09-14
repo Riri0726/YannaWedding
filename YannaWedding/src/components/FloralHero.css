@@ -178,6 +178,13 @@
   box-shadow: 0 8px 30px rgba(70,50,45,0.06);
   cursor: pointer;
   font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.invitation-btn:hover {
+  background: #f3e5dc;
+  border-color: rgba(90,63,58,0.25);
+  box-shadow: 0 8px 35px rgba(70,50,45,0.12);
 }
 
 /* ensure child text elements are not translucent due to parent layering */

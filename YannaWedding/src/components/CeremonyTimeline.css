@@ -108,8 +108,12 @@
   .ctimeline-icon {
     width: 22px;
     height: 22px;
-    margin-bottom: 2px;
+    margin-bottom: 17px;
+    margin-left: 10px;
+
   }
+
+  .ctimeline-icon
   .ctimeline-item.above .ctimeline-content {
     margin-bottom: 20px;
   }

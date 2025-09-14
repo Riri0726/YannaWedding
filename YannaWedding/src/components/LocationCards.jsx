@@ -58,7 +58,7 @@ const LocationCard = ({ location }) => {
           width: cardState === 'expanded' ? '100%' : '450px',
           maxWidth: cardState === 'expanded' ? '950px' : '450px'
         }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
       <div 
         className="location-card" 
@@ -132,14 +132,14 @@ const LocationCard = ({ location }) => {
       )}
 
       {/* Expanded Map Section */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {cardState === 'expanded' && (
           <motion.div
             className="map-section"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <div className="map-header">
               <h4>Location Map</h4>

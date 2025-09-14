@@ -15,13 +15,15 @@ import prenupVideo from "../assets/Prenup.mp4";
 // Import timeline images
 import image2007 from "../assets/2007.png";
 import image2021 from "../assets/2021.png";
-import image2025 from "../assets/2025.png";
+import image2025 from "../assets/2025.jpg";
 import flowerCenter from "../assets/flower center.png";
 import galleryBackground from "../assets/Gallery Background.png";
 import attireImage from "../assets/Attire.png";
 import colorPaletteImage from "../assets/Color Palette.png";
 
 const Home = () => {
+  const [isGiftCardFlipped, setIsGiftCardFlipped] = useState(false);
+  
   // Navigation scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +50,7 @@ const Home = () => {
     seconds: 0,
   });
 
-  // Timeline scroll animation
+  // Timeline and gift card scroll animation
   useEffect(() => {
     const observerOptions = {
       threshold: 0.3,
@@ -59,6 +61,17 @@ const Home = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("visible");
+          // If it's the gift card container, add active class
+          if (entry.target.classList.contains("gift-card-container")) {
+            entry.target.classList.add("active");
+          }
+        } else {
+          // Remove visible class when out of viewport
+          entry.target.classList.remove("visible");
+          // Remove active class when not in viewport for gift card
+          if (entry.target.classList.contains("gift-card-container")) {
+            entry.target.classList.remove("active");
+          }
         }
       });
     }, observerOptions);
@@ -318,7 +331,7 @@ const Home = () => {
       {/* Interactive Vertical Timeline Section */}
       <section className="timeline" id="story">
         <div className="timeline-container">
-          <h2 className="timeline-title">A story of ourever after</h2>
+          <h2 className="timeline-title">A story of our ever after</h2>
 
           <div className="timeline-wrapper">
             <div className="timeline-line"></div>
@@ -441,13 +454,26 @@ const Home = () => {
       {/* Attire Section */}
       <section className="attire" id="attire">
         <div className="section-container">
-          <h2>The Attire</h2>
+          <h2>Guests color palette</h2>
           <div className="attire-content">
-            <div className="attire-image">
-              <img src={attireImage} alt="Attire Guidelines" />
-            </div>
-            <div className="color-palette-image">
-              <img src={colorPaletteImage} alt="Color Palette" />
+            <div className="attire-grid">
+              <div className="attire-grid-item">
+                <div className="attire-image">
+                  <img src={attireImage} alt="Attire Guidelines" />
+                </div>
+                <div className="color-palette-image">
+                  <img src={colorPaletteImage} alt="Color Palette" />
+                </div>
+              </div>
+              <div className="attire-grid-item">
+                {/* Using same images as placeholder */}
+                <div className="attire-image">
+                  <img src={attireImage} alt="Additional Attire Guidelines" />
+                </div>
+                <div className="color-palette-image">
+                  <img src={colorPaletteImage} alt="Additional Color Palette" />
+                </div>
+              </div>
             </div>
             <h2>Please make sure to follow the attire guidelines!</h2>
           </div>
@@ -458,27 +484,36 @@ const Home = () => {
       <section className="gifts" id="gifts">
         <div className="section-container">
           <h2>Note on Gifts</h2>
-          <div className="gift-icon">
-            <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20,12 20,22 4,22 4,12" />
-              <rect x="2" y="7" width="20" height="5" />
-              <line x1="12" y1="22" x2="12" y2="7" />
-              <path d="m12 7-3-3h6l-3 3" />
-              <path d="m9 7 3 4 3-4" />
-            </svg>
+          <div className={`gift-card-container ${isGiftCardFlipped ? 'flipped' : ''}`}>
+            <div className="gift-card">
+              <div className="gift-card-front" onClick={() => setIsGiftCardFlipped(true)}>
+                <div className="gift-icon">
+                  <svg viewBox="0 0 24 24" width="80" height="80" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20,12 20,22 4,22 4,12" />
+                    <rect x="2" y="7" width="20" height="5" />
+                    <line x1="12" y1="22" x2="12" y2="7" />
+                    <path d="m12 7-3-3h6l-3 3" />
+                    <path d="m9 7 3 4 3-4" />
+                  </svg>
+                </div>
+                <h3>Click to read our note on gifts</h3>
+              </div>
+              <div className="gift-card-back" onClick={() => setIsGiftCardFlipped(false)}>
+                <h3>
+                  With all that we have,
+                  <br />
+                  we have been truly blessed.
+                  <br />
+                  Your presence & prayers
+                  <br />
+                  are all that we request.
+                  <br />
+                  But if you desire to give nonetheless,
+                  <br />a monetary gift is one we suggest.
+                </h3>
+              </div>
+            </div>
           </div>
-          <h3>
-            With all that we have,
-            <br />
-            we have been truly blessed.
-            <br />
-            Your presence & prayers
-            <br />
-            are all that we request.
-            <br />
-            But if you desire to give nonetheless,
-            <br />a monetary gift is one we suggest.
-          </h3>
         </div>
       </section>
 
